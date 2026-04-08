@@ -1,0 +1,14 @@
+{
+  "run_id": "99849989",
+  "task_id": "plan_A1",
+  "task_family": "decomposable_planning",
+  "topology": "modular",
+  "architecture": "flat_swarm",
+  "num_agents": 32,
+  "seed": 1,
+  "task_seed": 1,
+  "topology_seed": 1,
+  "max_steps": 20,
+  "model": "gpt-4o-mini",
+  "config_hash": "00b421e9"
+}

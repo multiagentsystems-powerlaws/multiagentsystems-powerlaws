@@ -1,0 +1,14 @@
+{
+  "run_id": "99ed0976",
+  "task_id": "plan_A2",
+  "task_family": "decomposable_planning",
+  "topology": "star",
+  "architecture": "flat_swarm",
+  "num_agents": 8,
+  "seed": 0,
+  "task_seed": 0,
+  "topology_seed": 0,
+  "max_steps": 20,
+  "model": "gpt-4o-mini",
+  "config_hash": "40fd2f37"
+}
