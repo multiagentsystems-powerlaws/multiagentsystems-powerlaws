@@ -164,7 +164,7 @@ class HybridModularTopology(BaseTopology):
 
                     # PROPOSE_CLAIM only for first speaker (no peers yet → structural root)
                     if not peers_with_output:
-                        ev_type             = EventType.PROPOSE_CLAIM
+                        ev_type             = "propose_claim"
                         py_parent_claim_ids = []
                     else:
                         ev_type             = None  # extractor infers revise/contradict/endorse

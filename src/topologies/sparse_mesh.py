@@ -199,7 +199,7 @@ class SparseMeshTopology(BaseTopology):
 
                     # Event type from graph structure — no fake endorsement heuristic
                     if round_idx == 0:
-                        ev_type             = EventType.PROPOSE_CLAIM
+                        ev_type             = "propose_claim"
                         py_parent_claim_ids = []
                     else:
                         ev_type             = None  # post-hoc: extractor infers revise/contradict/endorse

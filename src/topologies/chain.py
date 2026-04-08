@@ -167,7 +167,7 @@ class ChainTopology(BaseTopology):
                         agent_role=role,
                         system_prompt=system_prompt,
                         user_content=user_content,
-                        event_type=EventType.PROPOSE_CLAIM if agent_index == 0 else None,
+                        event_type="propose_claim" if agent_index == 0 else None,
                         claim_id=claim_id,
                         parent_claim_ids=parent_claim_ids,
                         root_claim_id=root_claim_id or claim_id,

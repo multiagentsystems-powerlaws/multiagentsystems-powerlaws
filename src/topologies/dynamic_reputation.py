@@ -205,7 +205,7 @@ class DynamicReputationTopology(BaseTopology):
 
                     # PROPOSE_CLAIM only at step 0 (no parents → structural root)
                     if step_idx == 0:
-                        ev_type             = EventType.PROPOSE_CLAIM
+                        ev_type             = "propose_claim"
                         py_parent_claim_ids = []
                     else:
                         ev_type             = None  # extractor infers from parent_claim_ids + signals

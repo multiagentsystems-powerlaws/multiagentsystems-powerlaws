@@ -144,13 +144,12 @@ class StarTopology(BaseTopology):
                     "Decompose the task into subtasks, one per worker."
                 ),
                 user_content=user_content,
-                event_type=EventType.PROPOSE_CLAIM,  # hub root claim — structural root, no parents
+                event_type="propose_claim",  # hub root claim — structural root, no parents
                 claim_id=hub_claim_id,
                 claim_depth=0,
                 parent_claim_ids=[],
                 root_claim_id=hub_claim_id,
                 subtask_id=root_subtask,
-                subtask_type=SubtaskType.PLANNING,
                 subtask_depth=0,
                 subtask_status="active",
                 subtask_assigned_by=None,
@@ -175,7 +174,7 @@ class StarTopology(BaseTopology):
                 self._step += 1
                 self._log_event(
                     agent_id=HUB_ID, agent_role="hub",
-                    event_type=EventType.DELEGATE_SUBTASK,
+                    event_type="delegate_subtask",
                     message_id=new_id("msg"), message_length_tokens=0,
                     message_length_chars=0, tokens_input=0, tokens_output=0,
                     tokens_total_event=0, latency_ms=0.0, action_success=True,
@@ -203,9 +202,12 @@ class StarTopology(BaseTopology):
 
             new_claims = dict(state["claims"])
             new_claims[hub_claim_id] = {
-                "agent_id": HUB_ID, "claim_id": hub_claim_id,
-                "root_claim_id": hub_claim_id,
-                "text_hash": text_hash(output), "depth": 0,
+                "agent_id":        HUB_ID,
+                "claim_id":        hub_claim_id,
+                "parent_claim_ids": [],
+                "root_claim_id":   hub_claim_id,
+                "depth":           0,
+                "text_hash":       text_hash(output),
             }
 
             new_outputs = dict(state["agent_outputs"])
@@ -282,9 +284,12 @@ class StarTopology(BaseTopology):
 
                 new_claims = dict(state["claims"])
                 new_claims[claim_id] = {
-                    "agent_id": worker_id, "claim_id": claim_id,
-                    "root_claim_id": root_claim_id or claim_id,
-                    "text_hash": text_hash(output), "depth": 1,
+                    "agent_id":        worker_id,
+                    "claim_id":        claim_id,
+                    "parent_claim_ids": [hub_claim_id] if hub_claim_id else [],
+                    "root_claim_id":   root_claim_id or claim_id,
+                    "depth":           1,
+                    "text_hash":       text_hash(output),
                 }
                 new_subtasks = dict(state["subtasks"])
                 if assigned_subtask_id and assigned_subtask_id in new_subtasks:
@@ -359,9 +364,12 @@ class StarTopology(BaseTopology):
 
             new_claims = dict(state["claims"])
             new_claims[final_claim_id] = {
-                "agent_id": HUB_ID, "claim_id": final_claim_id,
-                "root_claim_id": root_claim_id, "text_hash": text_hash(output),
-                "depth": 2,
+                "agent_id":        HUB_ID,
+                "claim_id":        final_claim_id,
+                "parent_claim_ids": worker_claim_ids,
+                "root_claim_id":   root_claim_id,
+                "depth":           2,
+                "text_hash":       text_hash(output),
             }
             new_outputs = dict(state["agent_outputs"])
             new_outputs[HUB_ID + "_final"] = output

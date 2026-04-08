@@ -345,7 +345,7 @@ class TreeTopology(BaseTopology):
                         agent_id=agent_id, agent_role=role,
                         system_prompt="You are the top-level supervisor. Synthesize all team reports.",
                         user_content=user_content,
-                        event_type=EventType.PROPOSE_CLAIM,
+                        event_type="propose_claim",
                         claim_id=claim_id,
                         claim_depth=depth,
                         parent_claim_ids=py_parent_claim_ids,
@@ -432,7 +432,7 @@ class TreeTopology(BaseTopology):
                             self._step += 1
                             self._log_event(
                                 agent_id=agent_id, agent_role=role,
-                                event_type=EventType.DELEGATE_SUBTASK,
+                                event_type="delegate_subtask",
                                 message_id=new_id("msg"),
                                 message_length_tokens=0, message_length_chars=0,
                                 tokens_input=0, tokens_output=0, tokens_total_event=0,
