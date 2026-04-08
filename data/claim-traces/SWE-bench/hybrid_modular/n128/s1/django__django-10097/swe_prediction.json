@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The URLValidator in Django should be updated to reject invalid characters in both the username and password fields to enhance security and ensure proper validation.",
+  "model_name_or_path": "SWE-bench__hybrid_modular__n128__s1__django__django-10097"
+}

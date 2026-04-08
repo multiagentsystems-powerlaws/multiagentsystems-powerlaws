@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The issue with the `minversion` function in the Astropy library, introduced by changes in PR #7647, arises from the way version strings with non-standard formats (like '1.14dev') are compared. The root cause is a `TypeError` that occurs when using `LooseVersion` from `distutils.version`, which fails",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n16__s0__astropy__astropy-7671"
+}

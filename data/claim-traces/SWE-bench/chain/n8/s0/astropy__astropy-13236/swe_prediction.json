@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_e36e807f\",\n  \"endorsement_reason\": \"There is a strong consensus regarding the consideration to remove the automatic transformation of structured columns into NdarrayMixin in the astropy library.\",\n  \"support_type\": \"consensus\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n8__s0__astropy__astropy-13236"
+}

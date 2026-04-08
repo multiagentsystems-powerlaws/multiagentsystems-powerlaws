@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_b0134248\",\n  \"endorsement_reason\": \"The prior claim accurately describes the issue caused by PR #7647, and all prior claims support this assertion.\",\n  \"support_type\": \"consensus\",\n  \"parent_claim_ids\": [\"claim_30bbfeca\", \"claim_3c9586ae\", \"claim_5046d869\", \"claim_e59503fb\", \"claim_ffe0e09f\", \"claim_daaee75b\"]\n}",
+  "model_name_or_path": "SWE-bench__chain__n8__s0__astropy__astropy-7671"
+}

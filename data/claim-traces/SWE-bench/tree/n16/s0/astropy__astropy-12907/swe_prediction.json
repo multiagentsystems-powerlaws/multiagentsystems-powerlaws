@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "{\"action\":\"endorse_claim\",\"claim_id\":\"b7a1e5c3e4a149c68e8c80e4e2e8e7b4\",\"endorsed_claim_id\":\"claim_61c0\",\"endorsement_reason\":\"The claim accurately describes the issue with the separability_matrix function for nested CompoundModels, which has been demonstrated with a Linear1D model.\",\"support_type\":\"team consensus\"}",
+  "model_name_or_path": "SWE-bench__tree__n16__s0__astropy__astropy-12907"
+}

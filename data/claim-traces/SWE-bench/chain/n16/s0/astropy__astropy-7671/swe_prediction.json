@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_c39c5a35\",\n  \"endorsement_reason\": \"The claim accurately describes the issue with the minversion functionality in astropy.utils, which fails with TypeError when checking for versions like '1.14dev' due to a change in PR #7647.\",\n  \"support_type\": \"consensus\",\n  \"parent_claim_ids\": [\"claim_97e46975\"],\n  \"root_claim_id\": \"claim_c39c5a35\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n16__s0__astropy__astropy-7671"
+}

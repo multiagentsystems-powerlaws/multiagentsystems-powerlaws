@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "The `separability_matrix` function in astropy's modeling module does not correctly compute the separability for nested CompoundModels, such as when using `m.Linear1D(10) & m.Linear1D(5)`. This issue should be addressed to ensure accurate separability calculations for such models.",
+  "model_name_or_path": "SWE-bench__full_mesh__n64__s0__astropy__astropy-12907"
+}

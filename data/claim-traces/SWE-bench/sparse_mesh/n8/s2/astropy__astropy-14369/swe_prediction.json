@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "### Issue Summary\n\nAstropy's table reading functionality for the CDS format (`format='ascii.cds'`) is currently unable to correctly interpret composite units specified in MRT files. This results in the incorrect display and interpretation of unit expressions, particularly for complex units like `10+",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n8__s2__astropy__astropy-14369"
+}

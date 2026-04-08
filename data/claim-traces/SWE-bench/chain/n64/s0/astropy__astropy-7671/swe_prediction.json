@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "```json\n{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_3042049f\",\n  \"endorsement_reason\": \"The prior claim accurately describes the issue with `minversion` failures introduced by the change in PR #7647.\",\n  \"support_type\": \"consensus\"\n}\n```",
+  "model_name_or_path": "SWE-bench__chain__n64__s0__astropy__astropy-7671"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "The issue with incorrect unit parsing when reading MRT files formatted according to the CDS standard using `astropy.table` arises from the implementation of the `ascii.cds` reader in the `astropy` library. Specifically, the current logic fails to accurately interpret composite units that contain bot",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n64__s2__astropy__astropy-14369"
+}

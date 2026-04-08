@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "### Issue Summary\nThe `separability_matrix` function in the Astropy library is failing to compute the separability correctly for nested `CompoundModels`. The expected behavior is that the outputs of independent models should remain separable, even when nested. However, when a model like `Pix2Sky_TAN",
+  "model_name_or_path": "SWE-bench__star__n128__s0__astropy__astropy-12907"
+}

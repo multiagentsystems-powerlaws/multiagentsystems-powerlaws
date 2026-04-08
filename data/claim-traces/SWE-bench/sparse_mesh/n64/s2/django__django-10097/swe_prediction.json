@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "To address the issue of invalid characters being accepted in the username and password fields of URLs by the `URLValidator` in Django, we need to update the validation logic to strictly comply with RFC 1738 section 3.1. This section specifies that characters such as `:`, `@`, and `/` must be percent",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n64__s2__django__django-10097"
+}

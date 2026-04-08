@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "```json\n{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_6bdc6de3\",\"endorsement_reason\":\"The claim accurately describes the TypeError introduced by the change in PR #7647 when using 'minversion' with certain version strings.\",\"support_type\":\"consistent\"}\n```",
+  "model_name_or_path": "SWE-bench__chain__n64__s1__astropy__astropy-7671"
+}

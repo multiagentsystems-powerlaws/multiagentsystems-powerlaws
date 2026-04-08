@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The root cause of the `minversion` failures in the Astropy repository is the limitations of the `LooseVersion` class from Python's `distutils.version` module. The issue arises when comparing version strings that contain both numeric and non-numeric components (e.g., '1.14.3' and '1.14dev'). This res",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n64__s0__astropy__astropy-7671"
+}

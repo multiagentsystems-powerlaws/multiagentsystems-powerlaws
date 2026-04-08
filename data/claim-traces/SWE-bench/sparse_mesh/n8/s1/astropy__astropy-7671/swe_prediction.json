@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The issue reported is caused by the `minversion` function in the `astropy.utils` module, which fails to correctly compare version strings that include development identifiers (like '1.14dev') due to a bug in the `LooseVersion` implementation from the `distutils.version` module. This bug is highlight",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n8__s1__astropy__astropy-7671"
+}

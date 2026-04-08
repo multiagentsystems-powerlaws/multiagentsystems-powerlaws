@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_4bcc\",\"endorsement_reason\":\"The claim correctly identifies that the change in PR #7647 causes `minversion` to fail when comparing certain version strings, resulting in a TypeError.\",\"support_type\":\"factual\"}",
+  "model_name_or_path": "SWE-bench__full_mesh__n8__s0__astropy__astropy-7671"
+}

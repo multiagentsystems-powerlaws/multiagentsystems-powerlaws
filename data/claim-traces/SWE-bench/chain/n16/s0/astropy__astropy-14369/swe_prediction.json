@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_42e76472\",\n  \"endorsement_reason\": \"The claim accurately identifies the issue with parsing composite units from MRT files in the astropy.table.\",\n  \"support_type\": \"consensus\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n16__s0__astropy__astropy-14369"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_dfc14eed\",\"endorsement_reason\":\"The claim accurately describes the TypeError when using minversion with certain inputs due to the changes in PR #7647.\",\"support_type\":\"factual\"}",
+  "model_name_or_path": "SWE-bench__chain__n16__s2__astropy__astropy-7671"
+}

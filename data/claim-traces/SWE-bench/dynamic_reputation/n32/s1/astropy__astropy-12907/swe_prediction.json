@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "### Identified Issue\nThe `separability_matrix` function in the Astropy library fails to compute the separability correctly for nested `CompoundModels`. This occurs specifically when combining models using the `&` operator, resulting in a failure to recognize the independence of inputs and outputs fr",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n32__s1__astropy__astropy-12907"
+}

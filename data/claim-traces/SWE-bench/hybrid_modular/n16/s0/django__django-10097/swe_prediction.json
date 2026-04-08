@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "Enhance URLValidator to reject invalid characters in usernames and passwords for improved security and validation.",
+  "model_name_or_path": "SWE-bench__hybrid_modular__n16__s0__django__django-10097"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The issue with the `minversion` function introduced in PR #7647 is primarily due to its failure to correctly handle version strings that include pre-release identifiers, such as '1.14dev'. This results in a `TypeError` that occurs when comparing versions that contain both numeric and non-numeric cha",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n64__s0__astropy__astropy-7671"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The root cause of the `minversion` failures in the Astropy library stems from the limitations of the `LooseVersion` class in the `distutils.version` module. This class does not handle comparisons correctly when version strings contain a mix of numeric and non-numeric components, such as integers and",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n128__s0__astropy__astropy-7671"
+}

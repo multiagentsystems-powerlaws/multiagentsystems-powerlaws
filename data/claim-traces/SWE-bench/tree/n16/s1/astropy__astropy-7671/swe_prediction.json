@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The minversion function in the astropy.utils module experiences a TypeError after changes in PR #7647 when called with certain version strings, specifically when using development version strings like '1.14dev'.",
+  "model_name_or_path": "SWE-bench__tree__n16__s1__astropy__astropy-7671"
+}

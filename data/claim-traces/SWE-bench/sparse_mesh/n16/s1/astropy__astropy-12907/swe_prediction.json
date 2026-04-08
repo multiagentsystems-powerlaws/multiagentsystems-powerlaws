@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "The issue at hand involves the `separability_matrix` function within the Astropy modeling module, particularly its handling of nested CompoundModels. The current implementation fails to accurately compute the separability for these nested models, leading to incorrect results. \n\n### Root Cause\nThe pr",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n16__s1__astropy__astropy-12907"
+}

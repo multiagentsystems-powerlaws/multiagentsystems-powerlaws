@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "### Root Cause Analysis of `minversion` Failure\n\nThe issue with the `minversion` function in the Astropy library arises from the use of `LooseVersion` from Python's `distutils.version` module. The root cause of the problem is that `LooseVersion` fails to handle comparisons between version strings th",
+  "model_name_or_path": "SWE-bench__star__n64__s2__astropy__astropy-7671"
+}

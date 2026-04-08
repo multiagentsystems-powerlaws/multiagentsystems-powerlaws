@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "**Root Cause Identification:**\nThe issue stems from Django's `URLValidator`, which fails to enforce the required percent-encoding for special characters in the username and password fields of URLs, as specified in RFC 1738 section 3.1. Specifically, characters such as \":\", \"@\", and \"/\" should be enc",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n16__s0__django__django-10097"
+}

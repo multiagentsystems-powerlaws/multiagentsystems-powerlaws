@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "### Issue Summary\n\nThe problem arises from the `ascii.cds` reader in the Astropy library, which incorrectly parses composite units from MRT (CDS format) files. Specifically, the parsing logic misinterprets the order of the units when they are formatted according to the CDS standard, leading to incor",
+  "model_name_or_path": "SWE-bench__star__n32__s1__astropy__astropy-14369"
+}

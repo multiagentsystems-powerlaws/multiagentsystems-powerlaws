@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "```json\n{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_9a0dcbf3\",\"endorsement_reason\":\"The claim accurately describes the ongoing issue with parsing composite units in astropy.table when reading MRT files formatted according to the CDS standard with format='ascii.cds'.\",\"support_type\":\"consensus\"}\n```",
+  "model_name_or_path": "SWE-bench__chain__n128__s2__astropy__astropy-14369"
+}

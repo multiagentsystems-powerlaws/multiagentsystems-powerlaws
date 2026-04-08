@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "{\"action\":\"endorse_claim\",\"claim_id\":\"0x1a2b3c4d\",\"endorsed_claim_id\":\"claim_c0e5\",\"endorsement_reason\":\"The claim accurately identifies the issue with the `separability_matrix` function for nested CompoundModels.\",\"support_type\":\"issue resolution\",\"parent_claim_ids\":[],\"root_claim_id\":\"claim_c0e5\"}",
+  "model_name_or_path": "SWE-bench__tree__n32__s1__astropy__astropy-12907"
+}

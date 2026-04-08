@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "The `separability_matrix` function does not correctly handle nested CompoundModels, such as when using `m.Linear1D(10) & m.Linear1D(5)` in the model definition.",
+  "model_name_or_path": "SWE-bench__tree__n64__s0__astropy__astropy-12907"
+}

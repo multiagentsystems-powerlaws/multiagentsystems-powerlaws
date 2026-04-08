@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "### Issue Summary\n\nThe problem reported involves incorrect unit parsing when reading MRT (CDS format) files using the `astropy.table` module with `format='ascii.cds'`. Specifically, the composite units defined in the input files are not being parsed correctly, leading to a misrepresentation of the u",
+  "model_name_or_path": "SWE-bench__star__n32__s2__astropy__astropy-14369"
+}

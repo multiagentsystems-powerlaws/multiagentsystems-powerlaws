@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The root cause of the `minversion` failures introduced in PR #7647 is due to the improper handling of version strings, particularly those that include pre-release identifiers like '1.14dev'. The comparison logic in the `LooseVersion` class from the `distutils.version` module is unable to handle thes",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n8__s0__astropy__astropy-7671"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "URLValidator should reject invalid characters in the username and password fields according to RFC 1738 section 3.1 requirements.",
+  "model_name_or_path": "SWE-bench__tree__n64__s0__django__django-10097"
+}

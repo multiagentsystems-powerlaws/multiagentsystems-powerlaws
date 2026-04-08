@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Issue Summary\nThe Astropy repository has an automatic transformation mechanism that converts structured `numpy.ndarray` objects into `NdarrayMixin` instances when they are added to an `astropy.Table`. This behavior was initially implemented to address serialization issues associated with structu",
+  "model_name_or_path": "SWE-bench__star__n64__s2__astropy__astropy-13236"
+}

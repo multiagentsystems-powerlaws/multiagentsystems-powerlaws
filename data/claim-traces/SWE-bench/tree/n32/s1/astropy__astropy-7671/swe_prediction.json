@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The changes in PR #7647 cause 'minversion' to fail when checking pre-release versions of numpy, confirming issues with specific inputs.",
+  "model_name_or_path": "SWE-bench__tree__n32__s1__astropy__astropy-7671"
+}

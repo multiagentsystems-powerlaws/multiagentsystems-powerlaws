@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The change in PR #7647 causes 'minversion' to fail in certain cases.",
+  "model_name_or_path": "SWE-bench__hybrid_modular__n64__s1__astropy__astropy-7671"
+}

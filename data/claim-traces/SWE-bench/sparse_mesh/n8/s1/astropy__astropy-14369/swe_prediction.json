@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "The issue with `astropy.table` incorrectly parsing composite units from MRT files using the `format='ascii.cds'` is indeed confirmed by multiple agents. The primary root cause lies in the parsing logic for composite units not adhering to the CDS standard, which specifies that units should be in SI w",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n8__s1__astropy__astropy-14369"
+}

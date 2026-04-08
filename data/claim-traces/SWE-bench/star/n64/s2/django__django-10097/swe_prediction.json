@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "### Root Cause Analysis\n\nThe issue with Django's `URLValidator` stems from its current implementation in the `core.validators` module, which inadequately enforces the encoding requirements outlined in RFC 1738, specifically Section 3.1. According to this RFC, characters such as `:`, `@`, and `/` mus",
+  "model_name_or_path": "SWE-bench__star__n64__s2__django__django-10097"
+}

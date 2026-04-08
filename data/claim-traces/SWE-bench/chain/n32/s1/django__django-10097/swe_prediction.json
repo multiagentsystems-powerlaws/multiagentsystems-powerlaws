@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "```json\n{ \"action\": \"endorse_claim\", \"endorsed_claim_id\": \"claim_04030851\", \"endorsement_reason\": \"The claim is correct and aligns with the previous endorsements regarding the behavior of the URLValidator.\", \"support_type\": \"consensus\" }\n```",
+  "model_name_or_path": "SWE-bench__chain__n32__s1__django__django-10097"
+}

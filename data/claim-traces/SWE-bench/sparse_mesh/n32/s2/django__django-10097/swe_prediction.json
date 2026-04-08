@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "To address the issue of invalid characters in the username and password fields within the `URLValidator` of Django, we need to make specific updates to ensure compliance with RFC 1738 section 3.1. The root cause of the issue is that the current implementation does not strictly enforce the encoding r",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n32__s2__django__django-10097"
+}

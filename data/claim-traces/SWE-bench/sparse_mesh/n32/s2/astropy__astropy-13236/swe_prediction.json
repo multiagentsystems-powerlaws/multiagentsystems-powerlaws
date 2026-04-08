@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Issue Summary\nThe current implementation in the Astropy library automatically transforms structured `np.array` data types into `NdarrayMixin` when they are added to a `Table`. This behavior, which was originally implemented to address serialization issues with structured `Column`, has become que",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n32__s2__astropy__astropy-13236"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The root cause of the issue is located in the `URLValidator` implementation within Django's validation framework, specifically in the regular expression used for URL validation. The current regex pattern fails to enforce the percent-encoding requirements specified in RFC 1738 for the username and pa",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n8__s0__django__django-10097"
+}

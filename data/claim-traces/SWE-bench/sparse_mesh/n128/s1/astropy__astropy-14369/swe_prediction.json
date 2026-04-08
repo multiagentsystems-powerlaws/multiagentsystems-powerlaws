@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "### Issue Summary\n\nThe Astropy package has a known issue where it incorrectly parses composite units when reading MRT files formatted according to the CDS standard using `format='ascii.cds'`. This issue primarily affects the interpretation of composite units which should be represented without space",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n128__s1__astropy__astropy-14369"
+}

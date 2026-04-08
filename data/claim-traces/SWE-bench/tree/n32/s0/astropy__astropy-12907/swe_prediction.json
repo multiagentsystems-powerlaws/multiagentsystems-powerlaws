@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "The separability_matrix function does not accurately handle nested CompoundModels, as evidenced by the provided example with Linear1D components.",
+  "model_name_or_path": "SWE-bench__tree__n32__s0__astropy__astropy-12907"
+}

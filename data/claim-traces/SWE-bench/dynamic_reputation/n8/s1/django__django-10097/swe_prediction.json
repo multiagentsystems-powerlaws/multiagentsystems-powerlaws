@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The root cause of the issue lies in the `URLValidator` implementation within Django's `validators.py` file. The current validation logic does not enforce the percent-encoding requirements specified in RFC 1738, section 3.1, which mandates that certain characters (specifically \":\", \"@\", or \"/\") withi",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n8__s1__django__django-10097"
+}

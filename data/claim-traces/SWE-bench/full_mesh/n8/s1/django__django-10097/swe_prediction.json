@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The URLValidator should be updated to reject URLs that contain invalid characters in the username and password fields, specifically ':', '@', or '/' as per RFC 1738 section 3.1.",
+  "model_name_or_path": "SWE-bench__full_mesh__n8__s1__django__django-10097"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "### Issue Description\nThe change introduced in PR #7647 has caused the `minversion` function in the Astropy library to fail with a `TypeError` when comparing version strings that include pre-release identifiers like 'dev'. Specifically, attempting to compare versions, such as `minversion('numpy', '1",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n128__s2__astropy__astropy-7671"
+}

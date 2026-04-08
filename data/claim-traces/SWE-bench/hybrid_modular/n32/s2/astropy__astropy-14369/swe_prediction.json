@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "There is a persistent issue with incorrect units being read from MRT (CDS format) files when using astropy.table.",
+  "model_name_or_path": "SWE-bench__hybrid_modular__n32__s2__astropy__astropy-14369"
+}

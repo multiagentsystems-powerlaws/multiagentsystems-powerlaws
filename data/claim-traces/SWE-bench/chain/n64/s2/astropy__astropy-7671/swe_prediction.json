@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "```json\n{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_c4d5ea79\",\"endorsement_reason\":\"The claim accurately describes the issue with the minversion function as it relates to TypeError when using 'numpy' and '1.14dev'.\",\"support_type\":\"consensus\",\"parent_claim_ids\":[],\"root_claim_id\":\"claim_c4d5ea79\"}\n```",
+  "model_name_or_path": "SWE-bench__chain__n64__s2__astropy__astropy-7671"
+}

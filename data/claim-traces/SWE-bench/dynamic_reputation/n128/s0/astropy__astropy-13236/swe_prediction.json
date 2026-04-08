@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Root Cause Analysis\nThe issue arises from the automatic transformation of structured `np.ndarray` objects into instances of `NdarrayMixin` when they are added to an Astropy `Table`. This transformation was initially introduced to address serialization challenges associated with structured dtypes",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n128__s0__astropy__astropy-13236"
+}

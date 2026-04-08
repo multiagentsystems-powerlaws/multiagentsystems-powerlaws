@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "PR #7647 causes `minversion` to fail with a TypeError when checking for certain versions, such as 'numpy' '1.14dev'.",
+  "model_name_or_path": "SWE-bench__tree__n64__s2__astropy__astropy-7671"
+}

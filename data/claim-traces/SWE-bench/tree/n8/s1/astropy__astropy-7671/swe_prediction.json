@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\"action\":\"endorse_claim\",\"claim_id\":\"c3f92a5b8d0e4b2e9ed5b5b9dfe79e91\",\"endorsed_claim_id\":\"claim_14ca\",\"endorsement_reason\":\"The claim accurately identifies the issue with the `minversion` function after changes in PR #7647.\",\"support_type\":\"technical\"}",
+  "model_name_or_path": "SWE-bench__tree__n8__s1__astropy__astropy-7671"
+}

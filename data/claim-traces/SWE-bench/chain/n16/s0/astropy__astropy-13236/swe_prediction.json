@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_3726e79a\",\n  \"endorsement_reason\": \"The claim is consistently supported by multiple endorsements, emphasizing the importance of discussing the potential removal of the auto-transform feature in structured columns.\",\n  \"support_type\": \"consensus\",\n  \"parent_claim_ids\": [\n    \"claim_3726e79a\"\n  ],\n  \"root_claim_id\": \"claim_af366e10\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n16__s0__astropy__astropy-13236"
+}

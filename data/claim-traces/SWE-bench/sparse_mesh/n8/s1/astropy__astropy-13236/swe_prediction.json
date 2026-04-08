@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Root Cause Analysis\n\nThe core issue revolves around the automatic transformation of structured `np.array` objects into `NdarrayMixin` when they are added to a Table in the Astropy library. This transformation was originally implemented to address issues with structured dtype `Column` handling, p",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n8__s1__astropy__astropy-13236"
+}

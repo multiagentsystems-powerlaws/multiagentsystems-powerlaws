@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_5e6b7dbd\",\"endorsement_reason\":\"The claim accurately describes the issue with `minversion` failures related to the change in PR #7647 when checking for specific versions of numpy.\",\"support_type\":\"unanimous\"}",
+  "model_name_or_path": "SWE-bench__chain__n16__s1__astropy__astropy-7671"
+}

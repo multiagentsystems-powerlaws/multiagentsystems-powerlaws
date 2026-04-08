@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_312eae57\",\n  \"endorsement_reason\": \"The prior claim accurately reflects the consensus on the need for the URLValidator to reject invalid characters in usernames and passwords.\",\n  \"support_type\": \"unanimous\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n8__s2__django__django-10097"
+}

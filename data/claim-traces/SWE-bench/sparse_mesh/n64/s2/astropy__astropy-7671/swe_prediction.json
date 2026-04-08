@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The root cause of the issue arises from the changes made in PR #7647, which affect the `minversion` function in the `astropy.utils` module. This function is responsible for comparing version strings, and it encounters a `TypeError` when processing certain version formats, particularly those that inc",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n64__s2__astropy__astropy-7671"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "{\"action\":\"endorse_claim\",\"claim_id\":\"4f5e0d1f3c7b4f99a1f6ec9a5f8c69e3e5f6b4a0\",\"endorsed_claim_id\":\"claim_147d\",\"endorsement_reason\":\"The proposal to remove the auto-transform of structured columns into NdarrayMixin is valid as it aims to simplify data handling and enhance performance.\",\"support_type\":\"team consensus\",\"parent_claim_ids\":[]}",
+  "model_name_or_path": "SWE-bench__tree__n32__s2__astropy__astropy-13236"
+}

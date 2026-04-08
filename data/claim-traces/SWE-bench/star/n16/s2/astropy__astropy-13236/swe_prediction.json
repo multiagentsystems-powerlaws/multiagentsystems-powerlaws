@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Root Cause Analysis\n\nThe root cause of the issue is the automatic transformation of structured `numpy` arrays into an `NdarrayMixin` class when they are added to an `astropy.table.Table`. This behavior was originally implemented to address limitations related to serialization issues with structu",
+  "model_name_or_path": "SWE-bench__star__n16__s2__astropy__astropy-13236"
+}

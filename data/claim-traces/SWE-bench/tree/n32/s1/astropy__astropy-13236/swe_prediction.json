@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "{\"action\":\"endorse_claim\",\"claim_id\":\"7a1d2e3f4g5h6i7j8k9l\",\"endorsed_claim_id\":\"claim_9a1d\",\"endorsement_reason\":\"The removal of auto-transform enhances clarity and user control over data transformations, aligning with best practices in data handling.\",\"support_type\":\"team consensus\"}",
+  "model_name_or_path": "SWE-bench__tree__n32__s1__astropy__astropy-13236"
+}

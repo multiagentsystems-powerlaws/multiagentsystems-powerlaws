@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "```json\n{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_59137f8b\",\n  \"endorsement_reason\": \"The claim accurately identifies the bug with minversion caused by PR #7647, leading to TypeErrors in specific cases.\",\n  \"support_type\": \"consensus\"\n}\n```",
+  "model_name_or_path": "SWE-bench__chain__n32__s2__astropy__astropy-7671"
+}

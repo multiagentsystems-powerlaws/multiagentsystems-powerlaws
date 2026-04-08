@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_67993938\",\n  \"endorsement_reason\": \"The claim accurately describes the issue with the `separability_matrix` function in astropy's modeling module not correctly computing the separability for nested CompoundModels.\",\n  \"support_type\": \"consensus\",\n  \"parent_claim_ids\": [\n    \"claim_c949604a\"\n  ],\n  \"root_claim_id\": \"claim_67993938\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n8__s2__astropy__astropy-12907"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "```json\n{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_ad6553b4\",\n  \"endorsement_reason\": \"The claim accurately describes the ongoing issue with astropy.table parsing composite units from MRT files formatted according to the CDS standard.\",\n  \"support_type\": \"consensus\",\n  \"parent_claim_ids\": [\"claim_30983043\"],\n  \"root_claim_id\": \"claim_ac20924d\"\n}\n```",
+  "model_name_or_path": "SWE-bench__chain__n32__s0__astropy__astropy-14369"
+}

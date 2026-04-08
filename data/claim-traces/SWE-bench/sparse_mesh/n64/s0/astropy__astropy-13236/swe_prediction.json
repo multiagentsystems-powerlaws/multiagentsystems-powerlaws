@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Issue Summary: Proposed Removal of Auto-Transform from Structured Columns to NdarrayMixin\n\n#### Background\nThe current implementation of the `astropy` library automatically transforms structured `np.array` objects into an `NdarrayMixin` when added to a Table. This transformation was originally i",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n64__s0__astropy__astropy-13236"
+}

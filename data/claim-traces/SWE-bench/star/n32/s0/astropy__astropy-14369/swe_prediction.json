@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "### Issue Summary\n\nThe Astropy library's `ascii.cds` reader is experiencing a bug when parsing composite units from MRT files formatted according to the CDS standard. Specifically, units such as `10+3J/m/s/kpc2` are being incorrectly interpreted during reading, leading to improper unit representatio",
+  "model_name_or_path": "SWE-bench__star__n32__s0__astropy__astropy-14369"
+}

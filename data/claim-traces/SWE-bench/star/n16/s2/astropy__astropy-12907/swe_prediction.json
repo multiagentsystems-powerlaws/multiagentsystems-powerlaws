@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "The issue with the `separability_matrix` function in the Astropy library stems from how it computes separability for nested `CompoundModels`. In particular, when a `CompoundModel` is nested, the current implementation fails to recognize that the inputs and outputs of independent components (like lin",
+  "model_name_or_path": "SWE-bench__star__n16__s2__astropy__astropy-12907"
+}

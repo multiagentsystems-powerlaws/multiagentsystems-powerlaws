@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_a24f\",\"endorsement_reason\":\"The claim accurately identifies that the change in PR #7647 causes `minversion` to fail when comparing versions with a 'dev' suffix.\",\"support_type\":\"correctness\"}",
+  "model_name_or_path": "SWE-bench__full_mesh__n32__s2__astropy__astropy-7671"
+}

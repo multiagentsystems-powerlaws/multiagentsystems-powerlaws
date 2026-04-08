@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "```json\n{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"claim_dea82345\",\"endorsement_reason\":\"The claim accurately describes the issue with the `minversion` function in `astropy.utils`, which fails with a TypeError when passing improperly formatted version strings.\",\"support_type\":\"general\"}\n```",
+  "model_name_or_path": "SWE-bench__chain__n32__s1__astropy__astropy-7671"
+}

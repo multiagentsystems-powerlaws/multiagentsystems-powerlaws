@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The root cause of the issue with Django's `URLValidator` is its failure to enforce the proper encoding of special characters in the username and password fields of URLs, as specified by RFC 1738 section 3.1. The current implementation allows characters such as \":\", \"@\", and \"/\" to be included in the",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n128__s2__django__django-10097"
+}

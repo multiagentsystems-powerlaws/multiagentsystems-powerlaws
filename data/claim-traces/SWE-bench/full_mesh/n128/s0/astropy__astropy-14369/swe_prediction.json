@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "{\"action\":\"endorse_claim\",\"endorsed_claim_id\":\"c06e\",\"endorsement_reason\":\"The claim accurately reflects the issue with parsing composite units in MRT files using astropy.table.\",\"support_type\":\"consensus\",\"parent_claim_ids\":[]}",
+  "model_name_or_path": "SWE-bench__full_mesh__n128__s0__astropy__astropy-14369"
+}

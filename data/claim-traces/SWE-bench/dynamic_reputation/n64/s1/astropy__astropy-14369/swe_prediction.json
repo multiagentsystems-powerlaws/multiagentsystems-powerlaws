@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "The issue with incorrect parsing of composite units when reading MRT files in the `ascii.cds` format using `astropy.table` arises from flaws in the unit parsing logic implemented in the `astropy.io.ascii` module. Specifically, the parsing mechanism does not correctly interpret the structure of compo",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n64__s1__astropy__astropy-14369"
+}

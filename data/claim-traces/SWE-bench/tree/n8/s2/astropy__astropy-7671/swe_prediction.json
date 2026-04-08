@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The change in PR #7647 introduces a TypeError in the minversion function when comparing versions with 'dev' suffixes.",
+  "model_name_or_path": "SWE-bench__tree__n8__s2__astropy__astropy-7671"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "Astropy.table incorrectly parses composite units when reading MRT files with format='ascii.cds'.",
+  "model_name_or_path": "SWE-bench__tree__n64__s0__astropy__astropy-14369"
+}

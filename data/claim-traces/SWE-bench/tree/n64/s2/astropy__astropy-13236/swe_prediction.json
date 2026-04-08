@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "The auto-transform of structured column into NdarrayMixin in the astropy library should be removed to improve clarity and usability.",
+  "model_name_or_path": "SWE-bench__tree__n64__s2__astropy__astropy-13236"
+}

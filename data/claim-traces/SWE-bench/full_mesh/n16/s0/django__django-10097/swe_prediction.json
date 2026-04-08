@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The URLValidator in Django should be updated to reject usernames and passwords that contain invalid characters as specified by RFC 1738, including ':' '@' and '/'.",
+  "model_name_or_path": "SWE-bench__full_mesh__n16__s0__django__django-10097"
+}

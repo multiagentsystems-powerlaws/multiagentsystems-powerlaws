@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Issue Summary\n\nThe issue at hand is the automatic transformation of structured `numpy` arrays into `NdarrayMixin` when they are added to an `astropy.Table`. This behavior was originally implemented to handle serialization issues and compatibility concerns with structured data types within the `C",
+  "model_name_or_path": "SWE-bench__star__n64__s0__astropy__astropy-13236"
+}

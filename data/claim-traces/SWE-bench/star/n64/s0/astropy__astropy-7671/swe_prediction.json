@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The issue with the `minversion` function in the Astropy library arises from the use of `LooseVersion` from the `distutils.version` module, which has a known limitation when comparing version strings that contain mixed types, specifically integers and strings. This bug leads to a `TypeError` when att",
+  "model_name_or_path": "SWE-bench__star__n64__s0__astropy__astropy-7671"
+}

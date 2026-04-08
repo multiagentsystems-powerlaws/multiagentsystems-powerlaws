@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\"action\":\"endorse_claim\",\"claim_id\":\"a3f1d2f4e7c1b5f0e9b6a7c8f9e3d4e5f6g7h8i9\",\"endorsed_claim_id\":\"claim_4975\",\"endorsement_reason\":\"The claim correctly identifies a TypeError caused by PR #7647 when using development versions of packages with minversion.\",\"support_type\":\"team consensus\"}",
+  "model_name_or_path": "SWE-bench__tree__n64__s0__astropy__astropy-7671"
+}

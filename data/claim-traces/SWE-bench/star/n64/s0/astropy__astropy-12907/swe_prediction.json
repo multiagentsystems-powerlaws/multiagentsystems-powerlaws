@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "### Issue Summary\n\nThe problem at hand is with the `separability_matrix` function in the Astropy library, which fails to compute the separability correctly for nested `CompoundModels`. Specifically, the function does not return the expected diagonal matrix for models like `m.Pix2Sky_TAN() & (m.Linea",
+  "model_name_or_path": "SWE-bench__star__n64__s0__astropy__astropy-12907"
+}

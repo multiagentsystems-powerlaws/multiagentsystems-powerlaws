@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "### Final Proposal for Issue: Consider Removing Auto-Transform of Structured Column into NdarrayMixin\n\n#### Root Cause Analysis\nThe core issue arises from the automatic transformation of structured `np.array` types into `NdarrayMixin` when they are added to an Astropy `Table`. This transformation wa",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n32__s2__astropy__astropy-13236"
+}

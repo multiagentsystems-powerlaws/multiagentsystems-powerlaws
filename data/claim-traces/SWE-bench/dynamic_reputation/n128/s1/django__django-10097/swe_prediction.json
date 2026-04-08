@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The root cause of the issue with Django's `URLValidator` lies in its regex implementation in the `validators.py` file. The current regex fails to enforce the requirement from RFC 1738 section 3.1, which states that characters such as \":\", \"@\", and \"/\" must be percent-encoded within the username and",
+  "model_name_or_path": "SWE-bench__dynamic_reputation__n128__s1__django__django-10097"
+}

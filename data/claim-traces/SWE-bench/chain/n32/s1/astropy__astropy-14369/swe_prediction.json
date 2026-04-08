@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "```json\n{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_6a1519fb\",\n  \"endorsement_reason\": \"The prior claim accurately describes the ongoing issue with incorrect units parsed from MRT files using astropy.table.\",\n  \"support_type\": \"factual\"\n}\n```",
+  "model_name_or_path": "SWE-bench__chain__n32__s1__astropy__astropy-14369"
+}

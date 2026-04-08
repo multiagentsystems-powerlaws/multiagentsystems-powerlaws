@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "### Root Cause\nThe root cause of the issue lies in the implementation of Django's `URLValidator`, which currently allows certain invalid characters (namely ':', '@', and '/') within the username and password fields of URLs. This behavior is in violation of the specifications laid out in RFC 1738 sec",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n16__s2__django__django-10097"
+}

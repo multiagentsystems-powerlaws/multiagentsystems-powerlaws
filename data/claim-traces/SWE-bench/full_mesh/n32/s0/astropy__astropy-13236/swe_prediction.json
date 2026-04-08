@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-13236",
+  "model_patch": "The automatic transformation of structured columns into NdarrayMixin should be reconsidered due to potential implications for data handling and performance in the astropy library.",
+  "model_name_or_path": "SWE-bench__full_mesh__n32__s0__astropy__astropy-13236"
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The issue with the `minversion` function in the Astropy library, as introduced by PR #7647, stems from improper handling of version strings that include non-standard suffixes, particularly pre-release identifiers like 'dev'. When comparing versions such as '1.14dev', the function raises a `TypeError",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n128__s1__astropy__astropy-7671"
+}

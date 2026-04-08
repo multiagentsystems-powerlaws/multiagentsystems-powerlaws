@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The issue with the `minversion` function in the `astropy` repository arises from the use of the `LooseVersion` class from the `distutils.version` module. This class fails to properly handle comparisons of version strings that contain both integers and non-integer components, such as strings (e.g., \"",
+  "model_name_or_path": "SWE-bench__star__n16__s0__astropy__astropy-7671"
+}

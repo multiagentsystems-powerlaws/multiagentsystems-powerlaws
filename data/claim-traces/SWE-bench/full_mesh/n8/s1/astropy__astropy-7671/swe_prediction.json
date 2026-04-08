@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The change in PR #7647 causes `minversion` to fail in certain cases due to incorrect handling of version strings, specifically when dealing with pre-release versions like '1.14dev'.",
+  "model_name_or_path": "SWE-bench__full_mesh__n8__s1__astropy__astropy-7671"
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "task_id": "33",
+    "benchmark": "MARBLE",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Please write a program called LanguageSkillEnhancer that helps users improve their language skills through a combination...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "25",
+    "benchmark": "MARBLE",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Please write a system called Financial_Collaborator that facilitates collaborative financial planning among multiple use...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "19",
+    "benchmark": "MARBLE",
+    "task_family": "coding",
+    "difficulty": "hard",
+    "prompt_preview": "Please write a system called CollaborativeStoryBuilder that enables multiple users to collaboratively create and share s...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "3",
+    "benchmark": "MARBLE",
+    "task_family": "coordination",
+    "difficulty": "hard",
+    "prompt_preview": "Please write a multi-agent system called 'CyberArena' that simulates a futuristic battle arena where multiple AI-control...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "26",
+    "benchmark": "MARBLE",
+    "task_family": "coding",
+    "difficulty": "hard",
+    "prompt_preview": "Please write a web application called ArtCollab that facilitates collaborative digital art creation among multiple users...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "5188369a-3bbe-43d8-8b94-11558f909a08",
+    "benchmark": "GAIA",
+    "task_family": "qa",
+    "difficulty": "easy",
+    "prompt_preview": "What writer is quoted by Merriam-Webster for the Word of the Day from June 27, 2022?",
+    "has_gold": true,
+    "requires_tools": false
+  },
+  {
+    "task_id": "04a04a9b-226c-43fd-b319-d5e89743676f",
+    "benchmark": "GAIA",
+    "task_family": "qa",
+    "difficulty": "medium",
+    "prompt_preview": "If we assume all articles published by Nature in 2020 (articles, only, not book reviews/columns, etc) relied on statisti...",
+    "has_gold": true,
+    "requires_tools": false
+  },
+  {
+    "task_id": "e8cb5b03-41e0-4086-99e5-f6806cd97211",
+    "benchmark": "GAIA",
+    "task_family": "qa",
+    "difficulty": "medium",
+    "prompt_preview": "I went to Virtue restaurant & bar in Chicago for my birthday on March 22, 2021 and the main course I had was delicious! ...",
+    "has_gold": true,
+    "requires_tools": false
+  },
+  {
+    "task_id": "bec74516-02fc-48dc-b202-55e78d0e17cf",
+    "benchmark": "GAIA",
+    "task_family": "qa",
+    "difficulty": "hard",
+    "prompt_preview": "What is the average number of pre-2020 works on the open researcher and contributor identification pages of the people w...",
+    "has_gold": true,
+    "requires_tools": true
+  },
+  {
+    "task_id": "676e5e31-a554-4acc-9286-b60d90a92d26",
+    "benchmark": "GAIA",
+    "task_family": "qa",
+    "difficulty": "hard",
+    "prompt_preview": "In July 2, 1959 United States standards for grades of processed fruits, vegetables, and certain other products listed as...",
+    "has_gold": true,
+    "requires_tools": false
+  },
+  {
+    "task_id": "rcmax_20_20_4_disrupted",
+    "benchmark": "REALM",
+    "task_family": "planning",
+    "difficulty": "easy",
+    "prompt_preview": "Scheduling problem: rcmax_20_20_4_disrupted\nBase instance: {'source_file': 'J1/DMU/rcmax_20_20_4.txt', 'jobs': [], 'mach...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "cscmax_20_15_8_disrupted",
+    "benchmark": "REALM",
+    "task_family": "planning",
+    "difficulty": "medium",
+    "prompt_preview": "Scheduling problem: cscmax_20_15_8_disrupted\nBase instance: {'source_file': 'J1/DMU/cscmax_20_15_8.txt', 'jobs': [], 'ma...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "cscmax_20_15_5_disrupted",
+    "benchmark": "REALM",
+    "task_family": "planning",
+    "difficulty": "medium",
+    "prompt_preview": "Scheduling problem: cscmax_20_15_5_disrupted\nBase instance: {'source_file': 'J1/DMU/cscmax_20_15_5.txt', 'jobs': [], 'ma...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "cscmax_30_20_6_disrupted",
+    "benchmark": "REALM",
+    "task_family": "planning",
+    "difficulty": "hard",
+    "prompt_preview": "Scheduling problem: cscmax_30_20_6_disrupted\nBase instance: {'source_file': 'J1/DMU/cscmax_30_20_6.txt', 'jobs': [], 'ma...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "cscmax_50_15_8_disrupted",
+    "benchmark": "REALM",
+    "task_family": "planning",
+    "difficulty": "hard",
+    "prompt_preview": "Scheduling problem: cscmax_50_15_8_disrupted\nBase instance: {'source_file': 'J1/DMU/cscmax_50_15_8.txt', 'jobs': [], 'ma...",
+    "has_gold": false,
+    "requires_tools": false
+  },
+  {
+    "task_id": "astropy__astropy-7671",
+    "benchmark": "SWE-bench",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Repository: astropy/astropy\nBase commit: a7141cd90019b62688d507ae056298507678c058\n\nIssue description:\nminversion failure...",
+    "has_gold": true,
+    "requires_tools": true
+  },
+  {
+    "task_id": "astropy__astropy-13236",
+    "benchmark": "SWE-bench",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Repository: astropy/astropy\nBase commit: 6ed769d58d89380ebaa1ef52b300691eefda8928\n\nIssue description:\nConsider removing ...",
+    "has_gold": true,
+    "requires_tools": true
+  },
+  {
+    "task_id": "django__django-10097",
+    "benchmark": "SWE-bench",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Repository: django/django\nBase commit: b9cf764be62e77b4777b3a75ec256f6209a57671\n\nIssue description:\nMake URLValidator re...",
+    "has_gold": true,
+    "requires_tools": true
+  },
+  {
+    "task_id": "astropy__astropy-14369",
+    "benchmark": "SWE-bench",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Repository: astropy/astropy\nBase commit: fa4e8d1cd279acf9b24560813c8652494ccd5922\n\nIssue description:\nIncorrect units re...",
+    "has_gold": true,
+    "requires_tools": true
+  },
+  {
+    "task_id": "astropy__astropy-12907",
+    "benchmark": "SWE-bench",
+    "task_family": "coding",
+    "difficulty": "easy",
+    "prompt_preview": "Repository: astropy/astropy\nBase commit: d16bfe05a744909de4b27f5875fe0d4ed41ce607\n\nIssue description:\nModeling's `separa...",
+    "has_gold": true,
+    "requires_tools": true
+  }
+]

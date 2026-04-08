@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "### Issue Summary\nThe issue stems from a change introduced in PR #7647 in the Astropy repository, which causes the `minversion` function to fail when comparing version strings that include non-standard characters, specifically development versions like '1.14dev'. This failure results in a `TypeError",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n32__s1__astropy__astropy-7671"
+}

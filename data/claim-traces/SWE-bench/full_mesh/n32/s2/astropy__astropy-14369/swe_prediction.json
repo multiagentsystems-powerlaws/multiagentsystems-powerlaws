@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-14369",
+  "model_patch": "Astropy.table has a bug that incorrectly parses composite units when reading MRT files formatted according to the CDS standard with format='ascii.cds'. This issue may lead to incorrect unit interpretation in the resulting table data.",
+  "model_name_or_path": "SWE-bench__full_mesh__n32__s2__astropy__astropy-14369"
+}

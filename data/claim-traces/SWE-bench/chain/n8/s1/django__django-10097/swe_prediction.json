@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_3e580df5\",\n  \"endorsement_reason\": \"The claim accurately reflects the requirement to reject invalid characters in usernames and passwords as per the RFC.\",\n  \"support_type\": \"consensus\",\n  \"parent_claim_ids\": []\n}",
+  "model_name_or_path": "SWE-bench__chain__n8__s1__django__django-10097"
+}

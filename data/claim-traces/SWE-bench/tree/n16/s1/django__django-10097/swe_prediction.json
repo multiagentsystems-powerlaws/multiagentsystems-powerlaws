@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-10097",
+  "model_patch": "The URLValidator in Django should reject URLs that contain invalid characters in the username and password fields, such as ':', '@', or '/'.",
+  "model_name_or_path": "SWE-bench__tree__n16__s1__django__django-10097"
+}

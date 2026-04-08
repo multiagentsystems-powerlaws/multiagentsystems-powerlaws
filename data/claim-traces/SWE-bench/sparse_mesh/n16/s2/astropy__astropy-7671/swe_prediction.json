@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The root cause of the issue in the `minversion` function arises from changes made in PR #7647, which improperly handles version strings that include suffixes like 'dev' (e.g., '1.14dev'). The `LooseVersion` class from `distutils.version` is unable to compare these mixed version strings correctly, le",
+  "model_name_or_path": "SWE-bench__sparse_mesh__n16__s2__astropy__astropy-7671"
+}

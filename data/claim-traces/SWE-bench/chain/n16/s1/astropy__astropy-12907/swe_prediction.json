@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-12907",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_fdc26abb\",\n  \"endorsement_reason\": \"The claim continues to accurately describe the issue with the `separability_matrix` function in handling nested CompoundModels, and it is well-supported by prior endorsements.\",\n  \"support_type\": \"consistent\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n16__s1__astropy__astropy-12907"
+}

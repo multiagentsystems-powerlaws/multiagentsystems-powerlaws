@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "{\n  \"action\": \"endorse_claim\",\n  \"endorsed_claim_id\": \"claim_d4071ca1\",\n  \"endorsement_reason\": \"The prior claim accurately reflects the ongoing issues with `minversion` failures in the astropy repository due to changes in PR #7647.\",\n  \"support_type\": \"claim\"\n}",
+  "model_name_or_path": "SWE-bench__chain__n128__s2__astropy__astropy-7671"
+}

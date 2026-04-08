@@ -1,0 +1,5 @@
+{
+  "instance_id": "astropy__astropy-7671",
+  "model_patch": "The change in PR #7647 introduced a TypeError in the minversion function when comparing versions, specifically when using a pre-release version like '1.14dev'.",
+  "model_name_or_path": "SWE-bench__tree__n16__s2__astropy__astropy-7671"
+}
