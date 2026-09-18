@@ -1,5 +1,10 @@
 .env
 *.pdf
+.claude/
+.vscode/
+CLI_COMMANDS.txt
+DESIGN.md
+FULL_SWEEP_COMMANDS.md
 venv/
 .conda/
 __pycache__/
