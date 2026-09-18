@@ -1,7 +1,7 @@
 """
 benchmark_wrappers/task_curator.py
 ------------------------------------
-Selects and balances the final task portfolio for the paper:
+Selects and balances the final task portfolio:
 
   MARBLE:     10 tasks  (3 easy,  4 medium,  3 hard)
   GAIA:       10 tasks  (3 easy,  3 medium,  4 hard)

@@ -8,8 +8,8 @@ Stages (all run in sequence unless --stages overrides):
   1. sweep      Run LLM multi-agent sweep
   2. extract    Extract H1/H2/H3 metrics from event logs
   3. analyse    Fit power laws + alternatives
-  4. tables     Generate LaTeX + CSV paper tables
-  5. figures    Generate all paper figures
+  4. tables     Generate LaTeX + CSV result tables
+  5. figures    Generate all result figures
 
 Usage — full sweep (one GPU per benchmark):
   python main.py --mode full --benchmark MARBLE \\
@@ -119,7 +119,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dry-run", action="store_true",
                    help="Print plan without running")
     p.add_argument("--dti", action="store_true",
-                   help="Enable Deficit-Triggered Integration (paper Section 6)")
+                   help="Enable Deficit-Triggered Integration (see src/dti/dti.py)")
     return p.parse_args()
 
 
@@ -268,7 +268,7 @@ def stage_extract(cfg: dict) -> dict:
     extracted    = cfg["out"] / "extracted"
     extracted.mkdir(parents=True, exist_ok=True)
 
-    # ── Pool + per-group observables (paper-faithful pipeline) ─────
+    # ── Pool + per-group observables ─────────────────────────────
     existing_roots = [r for r in data_roots if r.exists()]
     for r in data_roots:
         if r not in existing_roots:

@@ -3,9 +3,9 @@ src/context_builder.py
 
 Assembles the full prompt for one agent turn.
 
-Enforces the paper's 4000-token context window (Table 7) by truncating
-PRIOR OUTPUTS — the only unbounded-size component — dropping the oldest
-entries first when full history would overflow the budget.
+Enforces a fixed context-token budget by truncating PRIOR OUTPUTS — the
+only unbounded-size component — dropping the oldest entries first when full
+history would overflow the budget.
 
 What is NOT injected:
   - decision rules ("if prior claim -> revise_claim")
@@ -33,7 +33,7 @@ from loggers.trace_schema import AGENT_OUTPUT_FORMAT
 from prompts.topology_addenda import get_topology_addendum
 from prompts.task_addenda import get_task_addendum
 
-# Context budget for prompt assembly (paper Table 7: 4000-token window).
+# Context budget for prompt assembly.
 CONTEXT_BUDGET_TOKENS = 4000
 
 
@@ -185,6 +185,5 @@ def get_visible_neighbor_cap(n: int) -> int:
     return n
 
 
-# Token budget for LLM completions (paper Table 7: 1000-token completion budget).
-# Used by _acall_llm in base.py.
+# Token budget for LLM completions. Used by _acall_llm in base.py.
 MAX_COMPLETION_TOKENS = 1000

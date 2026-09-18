@@ -6,7 +6,7 @@ distributions for power-law fitting.
 
 Observable families
 -------------------
-PRIMARY (graph-derived — use for paper claims):
+PRIMARY (graph-derived — use for headline results):
   cascade_size, claim_in_degree, claim_out_degree, agent_out_degree
   → these come from graph_builder.py, not this file
 
@@ -17,20 +17,17 @@ SECONDARY (event-native — structural, bounded by topology design):
   contradiction_burst  agents per contradiction_group  ← run-scoped
   delegation_cascade   agents per subtask tree         ← run-scoped, BFS
 
-EXPLORATORY (heuristic — do not drive paper conclusions):
+EXPLORATORY (heuristic — do not drive reported conclusions):
   influence_per_agent  target-count proxy              ← downgraded label
 
-Fix summary vs prior version
------------------------------
-1. All grouping keys are now run-scoped: (run_id, group_id)
-   Prevents cross-run ID collisions merging unrelated cascades.
-2. TCE extraction is now filter-aware (event-based, not file-based).
-   extract_tce_per_run(data_root) replaced with
-   extract_tce_per_run_from_events(events).
-3. Delegation cascade uses subtask DAG reconstruction via
-   parent_subtask_id → subtask_id edges, not just root grouping.
-4. influence_per_agent renamed/docstring downgraded to proxy status.
-5. extract_all_observables wires TCE correctly through filtered events.
+Design notes:
+  - All grouping keys are run-scoped: (run_id, group_id). This prevents
+    cross-run ID collisions from merging unrelated cascades.
+  - TCE extraction operates on a pre-filtered, in-memory event list rather
+    than reading directly from files on disk, so benchmark/topology/N
+    filters apply before token totals are summed.
+  - Delegation cascade uses subtask DAG reconstruction via
+    parent_subtask_id → subtask_id edges, not just root grouping.
 """
 
 from __future__ import annotations
@@ -230,7 +227,8 @@ def extract_merge_fanin(events: List[Dict]) -> List[float]:
 def extract_tce_per_run_from_events(events: List[Dict]) -> List[float]:
     """
     Total Cognitive Effort (TCE) per run from a pre-filtered event list.
-    Replaces the old extract_tce_per_run(data_root) which ignored filters.
+    Operates on an in-memory event list rather than reading from files on
+    disk directly, so benchmark/topology/N filters are applied first.
 
     Sums tokens_total_event per run_id within the provided (filtered) events.
     """
@@ -262,13 +260,13 @@ def extract_tce_per_run(data_root: Path) -> List[float]:
 
 def extract_influence_per_agent(events: List[Dict]) -> List[float]:
     """
-    EXPLORATORY PROXY — do not use as a primary paper observable.
+    EXPLORATORY PROXY — do not use as a primary observable.
 
     Heuristic target-count score: how often each agent was cited as
     target_agent_id, merge_synthesizer_agent_id, or endorsed_agent_id.
 
     This is topology-specific and not comparable across topologies.
-    For paper claims, use graph-derived agent_out_degree or cascade_size
+    For headline results, use graph-derived agent_out_degree or cascade_size
     from graph_builder.py instead.
     """
     influence: Dict[str, float] = defaultdict(float)
@@ -294,7 +292,7 @@ def extract_influence_per_agent(events: List[Dict]) -> List[float]:
 # come from graph_builder.py. This file emits only coordination
 # observables: merge_fanin, tce_per_run, revision_wave, etc.
 PRIMARY_OBSERVABLES = [
-    # Graph-derived (from graph_builder.py) — strongest for paper
+    # Graph-derived (from graph_builder.py) — strongest for headline results
     "cascade_size",
     "claim_descendant_count",
     "agent_descendant_influence",

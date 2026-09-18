@@ -2,7 +2,6 @@
 src/metrics/inequality.py
 
 Inequality statistics over agent influence distributions.
-Lives in src/metrics/ — the existing empty package.
 
 Used by cascade_metrics.compute_agent_influence() callers
 and visualization modules (lorenz_curves.py etc.).

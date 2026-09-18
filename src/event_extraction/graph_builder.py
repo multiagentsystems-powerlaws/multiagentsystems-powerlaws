@@ -434,7 +434,7 @@ def graph_observables_from_tables(
     BFS traversals are performed PER RUN to avoid cross-run contamination.
     Even if claim IDs are globally unique, per-run grouping is more robust.
 
-    Observable definitions (strongest → weakest for paper claims)
+    Observable definitions (strongest → weakest for headline results)
     ─────────────────────────────────────────────────────────────
     PRIMARY (strongest — descendant-based):
       cascade_size            reachable descendants per root claim (BFS per run)

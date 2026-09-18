@@ -1,8 +1,8 @@
 """
 star.py  —  Star / Hub-and-Spoke topology
-Patch: build_context + AgentContextSpec replacing star_worker_context/star_hub_context.
-topology="star", task_family=self.task_family, available_tools=self._tool_names.
-prior_outputs as (agent_id, message_id, claim_id, text). All other logic unchanged.
+
+Prompt construction: build_context(AgentContextSpec(...)), with
+prior_outputs supplied as (agent_id, message_id, claim_id, text) tuples.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .base import (
     make_agent_id, new_id, text_hash,
     _ordered_claim_ids, _root_claim_from_parents, _update_meta,
 )
-from context_builder import build_context, AgentContextSpec   # PATCHED
+from context_builder import build_context, AgentContextSpec
 from loggers.schemas import EventType, TopologyName
 
 HUB_ID = "hub"
@@ -62,7 +62,6 @@ class StarTopology(BaseTopology):
             hub_claim_id = new_id("claim")
             root_subtask = new_id("sub")
 
-            # PATCHED: build_context
             spec = AgentContextSpec(
                 task=state["task"],
                 agent_id=HUB_ID,
@@ -189,7 +188,6 @@ class StarTopology(BaseTopology):
                 root_claim_id       = hub_claim_id
                 claim_id            = new_id("claim")
 
-                # PATCHED: prior_outputs includes hub's dispatch
                 hub_cid  = hub_claim_id or ""
                 hub_text = state["agent_outputs"].get(HUB_ID, "")
                 prior_outputs_list = [(HUB_ID, f"msg_hub_dispatch", hub_cid, hub_text)] if hub_text else []
@@ -273,7 +271,6 @@ class StarTopology(BaseTopology):
             root_subtask_id  = state["metadata"].get("root_subtask_id") or new_id("sub")
 
 
-            # PATCHED: prior_outputs with claim IDs
             ptr_map = state.get("metadata", {}).get("latest_claim_by_agent", {})
             prior_outputs_list = [
                 (wid, f"msg_worker_{i}", ptr_map.get(wid, ""), state["agent_outputs"].get(wid, ""))

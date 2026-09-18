@@ -1,7 +1,7 @@
 """
 tables/generate_tables.py
 --------------------------
-Paper table suite — 5 main tables + 2 appendix tables.
+Result table suite — 5 main tables + 2 appendix tables.
 
 Table 1  Power-law fit statistics for primary graph-derived observables
 Table 2  Scaling exponent (α) across topologies and agent scales
@@ -86,7 +86,7 @@ def _top_share(arr: np.ndarray, pct: float = 0.05) -> float:
     return float(arr[:k].sum() / arr.sum())
 
 
-# Human-readable labels for paper tables
+# Human-readable labels for output tables
 OBSERVABLE_LABELS: Dict[str, str] = {
     "agent_unique_descendant_reach": "Agent unique descendant reach",
     "agent_out_strength":            "Agent propagation strength",
@@ -99,7 +99,7 @@ OBSERVABLE_LABELS: Dict[str, str] = {
     "claim_depth":                   "Claim depth",
 }
 
-# Primary observables for the paper — order matters (strongest first)
+# Primary observables — order matters (strongest first)
 PRIMARY_OBSERVABLES = [
     "agent_unique_descendant_reach",
     "agent_out_strength",
@@ -397,7 +397,7 @@ def generate_table4(
     """
     Inequality statistics per topology for primary influence observables.
     The 'few players' table: Gini, top-5% share, p90, p99, xmax.
-    Most important for the paper's conceptual hook.
+    Most important for the influence-concentration narrative.
     """
     pd = _try_pandas()
 
@@ -675,7 +675,7 @@ def generate_all_tables(
     extracted_dir: Optional[Path] = None,
 ):
     """
-    Generate the full paper table suite.
+    Generate the full result table suite.
 
     Table 1  Power-law fit statistics (graph-first, primary observables)
     Table 2  α across topologies × scales

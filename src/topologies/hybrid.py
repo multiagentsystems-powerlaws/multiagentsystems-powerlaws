@@ -10,8 +10,8 @@ Structure
   Community_1:  [agents k+1..2k] ←→  bridge_1  ─┼→  integrator
   Community_2:  [agents 2k+1..3k] ←→ bridge_2  ─┘
 
-Design (paper-faithful)
------------------------
+Design principles
+------------------
 Topology owns: claim_id, parent_claim_ids, structural lineage, AgentContextSpec.
 Topology does NOT own: event_type (except PROPOSE_CLAIM for first speaker),
   merge_*/contradiction_* kwargs, semantic labels in state["claims"].
@@ -149,7 +149,6 @@ class HybridModularTopology(BaseTopology):
                     )
                     user_content = build_context(spec)
 
-                    # FIX 1: visible_neighbors inside _call_llm, not outside
                     output = self._call_llm(
                         agent_id=agent_id,
                         agent_role=role,
@@ -189,7 +188,7 @@ class HybridModularTopology(BaseTopology):
                 community_members     = [a for a in community if a != bridge_id]
                 community_member_cids = _ordered_claim_ids(state, community_members, new_claims)
 
-                # FIX 3: guard against double-counting bridge's own claim
+                # Guard against double-counting the bridge's own claim
                 bridge_own_cid = claim_ptr_updates.get(bridge_id)
                 if bridge_own_cid and bridge_own_cid not in community_member_cids:
                     community_member_cids = [bridge_own_cid] + community_member_cids
@@ -223,7 +222,6 @@ class HybridModularTopology(BaseTopology):
                 )
                 bridge_user_content = build_context(spec_bridge)
 
-                # FIX 1: visible_neighbors inside _call_llm
                 bridge_summary_output = self._call_llm(
                     agent_id=bridge_id,
                     agent_role="bridge",
@@ -284,7 +282,7 @@ class HybridModularTopology(BaseTopology):
                 if cid:
                     bridge_summary_cids.append(cid)
 
-            # FIX 2: use integrator_cid as fallback, not a throwaway new_id()
+            # integrator_cid is the fallback root, not a throwaway id
             integrator_cid = new_id("claim")
             root_claim_id  = _root_claim_from_parents(
                 state, bridge_summary_cids, integrator_cid
@@ -314,7 +312,6 @@ class HybridModularTopology(BaseTopology):
             )
             user_content = build_context(spec)
 
-            # FIX 1: visible_neighbors inside _call_llm
             output = self._call_llm(
                 agent_id=INTEGRATOR_ID,
                 agent_role="integrator",

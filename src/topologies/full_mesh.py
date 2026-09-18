@@ -39,17 +39,10 @@ Synthesis:  event_type=None — extractor detects merge from parent_claim_ids >=
 All claims: explicit claim_id and root_claim_id stored in state["claims"]
 Metadata:   latest_claim_by_agent pointer map maintained each round
 
-PATCH vs original:
-  - Round node: replaced `peer_context as build_peer_ctx` + `user_content, _ = build_peer_ctx(...)`
-    with `build_context(AgentContextSpec(...))`. Added topology="full_mesh",
-    task_family=self.task_family, available_tools=self._tool_names.
-    prior_outputs in new (aid, mid, cid, text) 4-tuple format.
-  - Synthesis node: was using old 3-tuple (aid, cid, text) prior_outputs format and
-    `user_content, _ = build_context(...)` unpacking. Fixed to 4-tuple format and
-    `user_content = build_context(spec)`. Added topology, task_family, available_tools.
-    Removed max_prior_outputs and max_tokens_per_output (not in new AgentContextSpec).
-  - All other logic (edge_list, activation, claim lineage, state updates,
-    contradiction detection, graph wiring) is byte-for-byte identical to original.
+Prompt construction:
+  - Both the per-round and synthesis nodes build their prompt via
+    build_context(AgentContextSpec(...)), with prior_outputs supplied as
+    (agent_id, message_id, claim_id, text) tuples.
 """
 
 from __future__ import annotations
@@ -139,7 +132,6 @@ class FullMeshTopology(BaseTopology):
                         state, py_parent_claim_ids, claim_id, new_claims
                     )
 
-                    # PATCHED: prior_outputs in new (aid, mid, cid, text) 4-tuple format
                     ptr_map = dict((state.get("metadata") or {}).get("latest_claim_by_agent") or {})
                     prior_outputs_list = [
                         (p,
@@ -149,7 +141,6 @@ class FullMeshTopology(BaseTopology):
                         for p in peers_with_output
                     ]
 
-                    # PATCHED: AgentContextSpec + build_context replaces peer_context call
                     spec = AgentContextSpec(
                         task=state["task"],
                         agent_id=agent_id,
@@ -226,7 +217,6 @@ class FullMeshTopology(BaseTopology):
                 state, all_agent_claim_ids, final_claim_id
             )
 
-            # PATCHED: prior_outputs in new (aid, mid, cid, text) 4-tuple format
             # (original used 3-tuple (aid, cid, text) — old AgentContextSpec signature)
             active_agents = [aid for aid in ids if state["agent_outputs"].get(aid)]
             active_cids   = _ordered_claim_ids(state, active_agents)
@@ -238,7 +228,6 @@ class FullMeshTopology(BaseTopology):
                 for aid, cid in zip(active_agents, active_cids)
             ]
 
-            # PATCHED: build_context returns str — no unpacking
             # (original had `user_content, _ = build_context(AgentContextSpec(...))`)
             spec = AgentContextSpec(
                 task=state["task"],

@@ -1,7 +1,7 @@
 """
 src/analysis/pooled_observables.py
 
-Shared, paper-faithful H1 observable extraction, pooled across an arbitrary
+Shared, correctness-verified H1 observable extraction, pooled across an arbitrary
 set of data roots. This is the single implementation used by both
 scripts/extract_events.py and scripts/main.py's stage_extract — previously
 each had its own independent (and, for delegation/revision/merge/TCE,
@@ -15,8 +15,8 @@ runs, so pooling raw events before DAG construction would corrupt cascade
 reconstruction.
 
 influence_per_agent remains the exploratory, topology-specific proxy from
-event_extraction/coordination.py (explicitly marked "not a primary paper
-observable" there) and is computed on the flat filtered event list, as before.
+event_extraction/coordination.py (explicitly marked there as not a primary
+observable) and is computed on the flat filtered event list, as before.
 """
 
 from __future__ import annotations
@@ -32,8 +32,8 @@ from event_extraction.resolve_event_labels import resolve_event_labels
 from observables.dag_builder import build_all
 from observables.cascade_metrics import extract_all_observables
 
-# Maps cascade_metrics.py's paper-faithful observable names to the legacy
-# key names the pipeline has always emitted downstream (tables/visualization).
+# Maps cascade_metrics.py's observable names to the legacy key names the
+# pipeline has always emitted downstream (tables/visualization).
 OBSERVABLE_KEY_MAP = {
     "delegation_sizes":     "delegation_cascade",
     "revision_waves":       "revision_wave",
@@ -46,7 +46,7 @@ CORE_OBSERVABLE_KEYS = list(OBSERVABLE_KEY_MAP.values())
 
 def extract_run_observables(rows: List[Dict]) -> Dict[str, List[float]]:
     """
-    Run the paper-faithful per-run pipeline on one run's rows, returning
+    Run the correctness-verified per-run pipeline on one run's rows, returning
     results under the legacy key names used throughout the pipeline.
     """
     rows = annotate_event_types(rows)

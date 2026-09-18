@@ -1,49 +1,46 @@
 """
 src/benchmark_wrappers/task_expander.py
 
-Benchmark-conditioned workload expansion module (paper Appendix B.1).
+Benchmark-conditioned workload expansion module.
 
-Paper spec:
+Sizing rule:
     K = min(5, |B(b,d)|)        seed tasks sampled from benchmark b, domain d
     T(N) = ceil(N^0.65)         size-dependent workload-expansion target
     M = ceil(T(N) / K)          expanded tasks generated per seed
     Execution pool = K * M ≈ T(N)   expanded nodes only — seeds are evaluation anchors
-    rho(N) = N / T(N)           agents-per-subtask ratio (Appendix B.1, Eq. rho(N))
+    rho(N) = N / T(N)           agents-per-subtask ratio
 
-Design contracts (fixes vs previous versions):
+Design contracts:
 ───────────────────────────────────────────────
-1.  execution_pool = expanded_nodes only.
-    Root is handled separately as a synthesis stage.
-    Docstring, allocation, and pool_size all agree.
+-  execution_pool = expanded_nodes only. Root is handled separately as a
+   synthesis stage; the docstring, allocation, and pool_size all agree
+   on this.
 
-2.  No forced minimum-1 allocation.
-    _allocate_agents uses largest-remainder with no floor override,
-    so sum(budgets) == N exactly. active_agent_fraction is renamed
-    allocated_agent_fraction() to clarify it is a pre-run planning
-    statistic, not a runtime observation.
+-  No forced minimum-1 allocation. allocated_agent_fraction() (a pre-run
+   planning statistic, not a runtime observation) uses largest-remainder
+   allocation with no floor override, so sum(budgets) == N exactly.
 
-3.  Root depends on expanded_nodes, not seed_nodes.
-    Seeds are not executed, so root cannot synthesise from their outputs.
-    Root synthesises from the outputs of the expanded execution pool.
+-  Root depends on expanded_nodes, not seed_nodes: seeds are not
+   executed, so root cannot synthesise from their outputs. Root
+   synthesises from the outputs of the expanded execution pool.
 
-4.  LLM expansion requires ALL M tasks to be valid.
-    Padding by duplication is rejected. If fewer than M valid tasks are
-    returned after max_retries, a RuntimeError is raised for real runs.
-    Duplicate descriptions and objectives are detected and rejected.
+-  LLM expansion requires ALL M tasks to be valid. Padding by duplication
+   is rejected: if fewer than M valid tasks are returned after
+   max_retries, a RuntimeError is raised for real runs. Duplicate
+   descriptions and objectives are detected and rejected.
 
-5.  Empty benchmark_pool guard in build().
+-  build() guards against an empty benchmark_pool.
 
-6.  active_agent_fraction() → allocated_agent_fraction().
+-  _build_sparse_dag uses a temporary set to prevent duplicate edges.
 
-7.  _build_sparse_dag uses a temporary set to prevent duplicate edges.
+-  Cross-cluster edge direction is a deliberate design choice (documented
+   at the call site).
 
-8.  Cross-cluster edge direction is documented as a design choice.
+-  _extract_source_facts_from_original() is a weak heuristic validator
+   only; structured facts come from LLM output.
 
-9.  _extract_source_facts_from_original() is marked as a weak heuristic
-    validator only; structured facts come from LLM output.
-
-10. evaluate_accuracy() documents the missing bridge: caller must map
-    root/expanded outputs back to seed.agent_answer before calling.
+-  evaluate_accuracy() requires the caller to map root/expanded outputs
+   back to seed.agent_answer before calling it.
 """
 
 from __future__ import annotations
@@ -60,8 +57,8 @@ from typing import Dict, List, Literal, Optional
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-K_MAX          = 5     # K = min(5, |B(b,d)|)   paper Appendix B.1
-WORKLOAD_EXPONENT = 0.65  # T(N) = ceil(N^WORKLOAD_EXPONENT)   paper Appendix B.1
+K_MAX          = 5     # K = min(5, |B(b,d)|) seed tasks per benchmark/domain
+WORKLOAD_EXPONENT = 0.65  # T(N) = ceil(N^WORKLOAD_EXPONENT)
 
 
 # ── Types ─────────────────────────────────────────────────────────────────────
@@ -78,7 +75,7 @@ def num_seed_tasks(pool_size: int) -> int:
 
 
 def workload_size(N: int) -> int:
-    """T(N) = ceil(N^0.65) — paper Appendix B.1 size-dependent workload rule."""
+    """T(N) = ceil(N^0.65) — size-dependent workload-expansion target."""
     return math.ceil(N ** WORKLOAD_EXPONENT)
 
 
@@ -181,7 +178,7 @@ class TaskTree:
         root_node       = synthesis stage, run after all execution_pool nodes.
         seed_nodes      = evaluation anchors only — NOT executed.
 
-    Root depends on expanded_nodes (fix #3): root synthesises from the
+    Root depends on expanded_nodes: root synthesises from the
     outputs agents actually produce, not from seed nodes that are never run.
 
     pool_size = len(expanded_nodes) = K * M.
@@ -612,7 +609,7 @@ def _call_llm_expand(
     """
     Expand one seed task into exactly M valid, unique structured sub-tasks.
 
-    Requires ALL M tasks to pass validation (fix #4).
+    Requires ALL M tasks to pass validation.
     Duplication padding is rejected — if M valid tasks cannot be produced
     after max_retries, raises RuntimeError.
     """
@@ -1128,7 +1125,7 @@ def _build_sparse_dag(
                         node.depends_on.append(pred.node_id)
                         forward_dag[pred.node_id].append(node.node_id)
 
-    # Root depends on ALL expanded nodes (fix #3)
+    # Root depends on ALL expanded nodes
     # Root synthesises from actual execution outputs.
     root_node.depends_on = [n.node_id for n in expanded_nodes]
     for n in expanded_nodes:
@@ -1141,7 +1138,7 @@ def _build_sparse_dag(
 
 def _allocate_agents(tree: TaskTree) -> TaskTree:
     """
-    Distribute exactly N agents across execution_pool + root (fix #2).
+    Distribute exactly N agents across execution_pool + root.
 
     Uses largest-remainder method: guarantees sum == N exactly.
     No forced minimum of 1 — some nodes can receive 0 budget at small N.
@@ -1183,7 +1180,7 @@ def _allocate_agents(tree: TaskTree) -> TaskTree:
 
 class TaskExpander:
     """
-    Benchmark-conditioned workload expansion (paper Section H).
+    Benchmark-conditioned workload expansion.
     """
 
     def __init__(
@@ -1222,9 +1219,9 @@ class TaskExpander:
                                  Only applies when use_llm=False.
 
         Raises:
-            ValueError: if benchmark_pool is empty (fix #5)
+            ValueError: if benchmark_pool is empty
         """
-        # Fix #5: guard against empty pool
+        # Guard against an empty pool
         if not benchmark_pool:
             raise ValueError(
                 "benchmark_pool must be non-empty. "
@@ -1368,7 +1365,7 @@ class TaskExpander:
 
         # ── Step 4: Build sparse DAG ──────────────────────────────────────────
         # Seeds are NOT included in the execution DAG.
-        # Root depends on all expanded_nodes (fix #3).
+        # Root depends on all expanded_nodes.
         dag = _build_sparse_dag(expanded_nodes, root_node, rng)
 
         # ── Step 5: Assemble and allocate ─────────────────────────────────────
@@ -1391,7 +1388,6 @@ class TaskExpander:
 def validate_tree(tree: TaskTree) -> dict:
     """
     Compute health metrics for a TaskTree.
-    Returns dict matching paper Figure 18 / Table H targets.
     """
     from collections import deque
 
@@ -1439,7 +1435,7 @@ def evaluate_accuracy(tree: TaskTree) -> Optional[float]:
     """
     Accuracy evaluated at seed nodes (ground truth anchors).
 
-    IMPORTANT (fix #10): seeds are not executed, so seed.agent_answer
+    IMPORTANT: seeds are not executed, so seed.agent_answer
     must be set by the caller before this function is called.
 
     Caller responsibility:
@@ -1527,7 +1523,7 @@ if __name__ == "__main__":
     # Structural checks
     m = validate_tree(tree)
 
-    # Correct root dependencies (fix #3)
+    # Correct root dependencies
     exp_ids  = {n.node_id for n in tree.expanded_nodes}
     seed_ids = {n.node_id for n in tree.seed_nodes}
     root_deps = set(tree.root_node.depends_on)
@@ -1538,11 +1534,11 @@ if __name__ == "__main__":
     )
     assert not (root_deps & seed_ids), "Root must NOT depend on seed nodes"
 
-    # Seeds not in execution pool (fix #1)
+    # Seeds not in execution pool
     pool_ids = {n.node_id for n in tree.execution_pool}
     assert not (seed_ids & pool_ids), "Seeds must not be in execution_pool"
 
-    # Exact agent sum (fix #2)
+    # Exact agent sum
     total = sum(tree.agent_allocation.values())
     assert total == tree.N, f"Agent sum {total} != N={tree.N}"
 
@@ -1555,7 +1551,7 @@ if __name__ == "__main__":
         assert len(n.depends_on) == len(set(n.depends_on)), \
             f"Duplicate deps at {n.node_id}: {n.depends_on}"
 
-    # Empty pool guard (fix #5)
+    # Empty pool guard
     try:
         expander.build(N=args.N, benchmark_pool=[])
         assert False, "Should have raised ValueError"

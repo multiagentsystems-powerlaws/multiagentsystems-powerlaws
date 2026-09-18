@@ -104,13 +104,13 @@ mas-powerlaws/
 │   ├── agents/                # LLMAgent — the per-agent LLM-call wrapper
 │   ├── execution/              # GraphRunner (single-run) / SweepRunner (async sweep)
 │   ├── event_extraction/      # Raw trace -> annotated event types (rule + LLM-assisted)
-│   ├── observables/            # Claim DAG / cascade reconstruction + the 5 paper observables
+│   ├── observables/            # Claim DAG / cascade reconstruction + the 5 core observables
 │   ├── tail_fitting/            # Truncated power-law MLE, boundary-aware LRT, bootstrap CIs
-│   ├── dti/                    # Deficit-Triggered Integration (Algorithm 1)
+│   ├── dti/                    # Deficit-Triggered Integration
 │   ├── metrics/                # Influence concentration (Gini, top-k share, effective N)
 │   ├── benchmark_wrappers/      # GAIA / SWE-bench / REALM-Bench / MARBLE loaders + task expansion
 │   ├── prompts/, context_builder.py   # Shared base prompt + topology/task addenda
-│   ├── tables/, visualization/  # Paper tables (LaTeX+CSV) and all 16+ paper figures
+│   ├── tables/, visualization/  # Result tables (LaTeX+CSV) and all 16+ result figures
 │   └── analysis/                # End-to-end per-run -> pooled-fit wiring
 ├── scripts/
 │   ├── main.py                  # All-in-one orchestrator: sweep→extract→analyse→tables→figures
@@ -120,8 +120,8 @@ mas-powerlaws/
 │   ├── build_manifest.py, diagnose_benchmarks.py        # Setup / debugging utilities
 │   └── test_pipeline.py, test_task_expander.py, smoke_test.py   # Validation (see below)
 ├── slurm/                       # SLURM job scripts for the distributed sweep
-├── MARBLE/, REALM-Bench/        # Vendored third-party benchmark suites (not part of this paper's code)
-├── assets/figures/               # Figures used in this README, extracted from the paper
+├── MARBLE/, REALM-Bench/        # Vendored third-party benchmark suites (not part of this codebase)
+├── assets/figures/               # Figures used in this README, extracted from the paper PDF
 └── requirements.txt, .env.example
 ```
 

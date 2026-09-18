@@ -124,7 +124,7 @@ def section(title: str):
 
 
 def print_scaling_table():
-    section("Scaling table — paper Section H (K=min(5,|B|), M=ceil(N/K*5))")
+    section("Scaling table — K=min(5,|B|), M=ceil(T(N)/K), T(N)=ceil(N^0.65)")
     print(f"  {'N':>5}  {'K':>4}  {'M':>5}  {'K*M':>6}  {'agents/task':>12}")
     print(f"  {'-'*42}")
     for N in [8, 16, 32, 64, 128, 256, 512]:
@@ -191,7 +191,7 @@ def print_allocation(tree):
     print(f"  Pool budgets         : min={min(budgets)}  max={max(budgets)}  "
           f"avg={sum(budgets)/len(budgets):.2f}")
     print(f"  Active agent frac    : {tree.allocated_agent_fraction():.1%}  "
-          f"(paper target >80%)")
+          f"(target >80%)")
 
 
 # ---------------------------------------------------------------------------
@@ -206,8 +206,8 @@ def run_checks(tree, pool_size: int, N: int) -> list[str]:
     if total != N:
         fails.append(f"Agent sum {total} != N={N}")
 
-    # 2. Root depends on exactly the expanded nodes (fix #3: seeds are
-    # never executed, so root cannot synthesise from their outputs).
+    # 2. Root depends on exactly the expanded nodes — seeds are never
+    # executed, so root cannot synthesise from their outputs.
     exp_root = {n.node_id for n in tree.expanded_nodes}
     got_root = set(tree.root_node.depends_on)
     if got_root != exp_root:
@@ -231,7 +231,7 @@ def run_checks(tree, pool_size: int, N: int) -> list[str]:
         if bad:
             fails.append(f"{n.node_id} has dangling deps: {bad}")
 
-    # 6. K and M match paper formulas exactly
+    # 6. K and M match the sizing formulas exactly
     exp_K = num_seed_tasks(pool_size)
     exp_M = num_expanded_per_seed(N, exp_K)
     if tree.K != exp_K:

@@ -2,7 +2,7 @@
 """
 scripts/generate_tables.py
 ----------------------------
-Generate all 4 paper tables as LaTeX + CSV.
+Generate all 4 result tables as LaTeX + CSV.
 
 Usage
 -----
@@ -33,7 +33,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Generate paper tables")
+    p = argparse.ArgumentParser(description="Generate result tables")
     p.add_argument("--data-roots",       nargs="+", required=True)
     p.add_argument("--single-agent-root", default=None)
     p.add_argument("--analysis",          default=None,

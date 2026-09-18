@@ -446,7 +446,7 @@ def test_real_llm_run(model: str, bench_filter: Optional[List[str]] = None):
 # ═════════════════════════════════════════════════════════════════════════
 def test_extraction():
     section("Stage 7: Event extraction")
-    # Paper-faithful per-run pipeline (event_extractor -> resolve ->
+    # Correctness-verified per-run pipeline (event_extractor -> resolve ->
     # dag_builder -> cascade_metrics), pooled across all run directories
     # found under root. Building the DAG per-run (not on one global flat
     # event list) is required: claim_id/subtask_id are not guaranteed
@@ -510,7 +510,7 @@ def test_fitter():
 
         # Generate synthetic TRUNCATED power-law data with known alpha, x_c.
         # Pure (untruncated) Pareto data is the wrong smoke-test target now
-        # that the primary model is TPL (paper Eq. 4): fitting an extra free
+        # that the primary model is TPL: fitting an extra free
         # parameter (x_c) against data with no real cutoff is an inherently
         # unstable edge case for the optimizer, not representative of the
         # genuinely-truncated data this pipeline actually analyzes.

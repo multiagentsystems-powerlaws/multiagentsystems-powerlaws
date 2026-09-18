@@ -73,7 +73,7 @@ def _load_observables(args) -> Dict[str, List[float]]:
         return obs
 
     if args.data_roots:
-        # Run extraction inline via the shared paper-faithful pipeline
+        # Run extraction inline via the shared, correctness-verified pipeline
         # (event_extractor -> resolve -> dag_builder -> cascade_metrics) --
         # same implementation used by extract_events.py and main.py's
         # stage_extract, not the coordination.py path (which gets
@@ -93,7 +93,7 @@ def _load_observables(args) -> Dict[str, List[float]]:
 
 
 def _fit_result_to_dict(r: FitResult) -> Dict:
-    """Serialize FitResult to JSON-safe dict (paper Table 1 fields)."""
+    """Serialize FitResult to a JSON-safe dict."""
     return {
         "observable":               r.observable,
         "n_total":                  r.n_total,

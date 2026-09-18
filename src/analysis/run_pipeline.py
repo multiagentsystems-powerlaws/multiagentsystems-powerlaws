@@ -22,7 +22,7 @@ Usage (single run, for testing):
     obs = process_run(Path("data/runs/gaia/chain/n16/s0/task_001"))
     print(obs["event_observables"]["tce"])
 
-Usage (sweep, for paper results):
+Usage (full sweep):
     from analysis.run_pipeline import process_condition
 
     fits = process_condition(
@@ -183,7 +183,7 @@ def process_condition(
     run_dirs contains one entry per seed.
 
     Returns:
-        dict of observable_name -> FitResult (paper Table 1 row)
+        dict of observable_name -> FitResult, one row per observable
     """
     t0 = time.time()
     per_run = []

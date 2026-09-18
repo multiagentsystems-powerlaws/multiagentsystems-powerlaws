@@ -7,7 +7,7 @@ Every plot module calls:
     from visualization import _save
     _save(fig, out_dir, figname)
 
-which saves as both PDF (for the paper) and PNG (for quick review).
+which saves as both PDF (for publication) and PNG (for quick review).
 """
 
 from __future__ import annotations

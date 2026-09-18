@@ -1,9 +1,8 @@
 """
 src/tail_fitting/powerlaw_fit.py
 
-Clauset-Newman-Shalizi-correct power-law fitting for coordination event sizes,
-matching the paper's truncated-power-law (TPL) statistical framework
-(Sec. 3.3/5.1, Appendix D.1, Eq. 4, Table 1/27).
+Clauset-Newman-Shalizi-correct discrete power-law fitting for coordination
+event sizes, using a truncated power law (TPL) as the primary model.
 
 Methodological notes:
 
@@ -15,48 +14,46 @@ Methodological notes:
      package). Pass xmin= to force a value for sensitivity checks only.
 
   3. PRIMARY MODEL IS THE TRUNCATED POWER LAW (TPL), P(X=x) ~ x^-alpha * e^(-x/x_c)
-     (paper Eq. 4) -- not the pure/untruncated power law. alpha and x_c both
-     come from fit.truncated_power_law, matching every reported (alpha, x_c)
-     pair in the paper's tables.
+     -- not the pure/untruncated power law. alpha and x_c both come from
+     fit.truncated_power_law, so every reported alpha carries its matching
+     cutoff scale x_c rather than assuming an unbounded tail.
 
   4. TPL-vs-PL is a NESTED comparison: PL is TPL's boundary case (x_c -> inf,
      i.e. the rate parameter Lambda=1/x_c -> 0). Because the null hypothesis
      sits on the boundary of TPL's parameter space, the standard chi-squared(1)
      LRT is invalid; the correct asymptotic null distribution for a one-sided
      boundary test is a 50:50 mixture of a point mass at 0 and chi-squared(1)
-     (Chernoff 1954; Self & Liang 1987) -- this is what "boundary-aware nested
-     LRT" (paper Sec. 3.3) means, and it is NOT the same test the underlying
-     `powerlaw` package's generic distribution_compare() runs. Implemented
-     here as boundary_aware_lrt().
+     (Chernoff 1954; Self & Liang 1987). This boundary-aware nested LRT is
+     NOT the same test the underlying `powerlaw` package's generic
+     distribution_compare() runs. Implemented here as boundary_aware_lrt().
 
   5. TPL-vs-LN uses the package's non-nested Vuong test (normalized_ratio=True)
-     between "truncated_power_law" and "lognormal" -- this is R_TPL/LN in the
-     paper's tables (R > 0 favours TPL).
+     between "truncated_power_law" and "lognormal" (R > 0 favours TPL).
 
   6. sigma_alpha (fast path) uses the analytic formula (alpha-1)/sqrt(n_tail)
-     from Clauset et al. Eq. 4. The paper's reported 95% CIs use RUN-CLUSTERED
-     BOOTSTRAP resampling instead (resampling whole runs, not individual
-     events, to respect within-run clustering) -- pass run_ids= and
-     n_bootstrap>0 to get this; each refit costs ~1-3s so this is opt-in, not
-     the default, to keep routine/smoke-test fitting fast. See
+     from Clauset et al. Eq. 4. For a tighter, cluster-aware 95% CI, use
+     RUN-CLUSTERED BOOTSTRAP resampling instead (resampling whole runs, not
+     individual events, to respect within-run clustering) -- pass run_ids=
+     and n_bootstrap>0 to get this; each refit costs ~1-3s so this is
+     opt-in, not the default, to keep routine/smoke-test fitting fast. See
      bootstrap_alpha_ci().
 
-  7. GOF (goodness-of-fit) for the fitted TPL: paper Table 1 reports a
-     semiparametric bootstrap GOF p-value (simulate synthetic data from the
-     fitted model, refit, compare KS distances -- Clauset et al. Sec 5). This
-     is opt-in via n_gof_sim>0 (see semiparametric_gof()); the fast-path
-     default falls back to a KS<0.1 heuristic (documented as approximate,
-     not a real p-value). WARNING: the underlying `powerlaw` package's
-     truncated_power_law.generate_random() scales very poorly with tail
-     size -- measured ~1.5s at n_tail=100 but ~16s at n_tail=1000 (roughly
-     linear, not the sub-second cost of the fit itself) -- so at the paper's
-     actual tail sizes (n_tail in the tens of thousands, Table 1) a single
-     n_gof_sim=100 run could take hours. Only enable this for small
-     conditions or with a long-running batch job, not interactively.
+  7. GOF (goodness-of-fit) for the fitted TPL: a semiparametric bootstrap
+     p-value (simulate synthetic data from the fitted model, refit, compare
+     KS distances -- Clauset et al. Sec 5) is the statistically rigorous
+     option, opt-in via n_gof_sim>0 (see semiparametric_gof()); the
+     fast-path default falls back to a KS<0.1 heuristic (documented as
+     approximate, not a real p-value). WARNING: the underlying `powerlaw`
+     package's truncated_power_law.generate_random() scales very poorly
+     with tail size -- measured ~1.5s at n_tail=100 but ~16s at n_tail=1000
+     (roughly linear, not the sub-second cost of the fit itself) -- so at
+     tail sizes in the tens of thousands, a single n_gof_sim=100 run could
+     take hours. Only enable this for small conditions or with a
+     long-running batch job, not interactively.
 
   8. Holm correction: apply holm_correction() to the TPL-vs-LN and TPL-vs-PL
-     p-values across the set of observables being reported together (paper:
-     "Holm-corrected across the five observables"), e.g. in fit_all().
+     p-values across the set of observables being reported together, e.g.
+     in fit_all(), to control the family-wise error rate.
 
   9. Gini computed on TAIL DATA ONLY (arr >= x_min), consistent with alpha,
      KS, and LR tests.
@@ -103,7 +100,7 @@ class FitResult:
     median:        float
     dynamic_range: int       # distinct integer values in tail
 
-    # Truncated power-law fit (paper Eq. 4): P(X=x) ~ x^-alpha * e^(-x/x_c)
+    # Truncated power-law fit: P(X=x) ~ x^-alpha * e^(-x/x_c)
     alpha:         float     # scaling exponent (discrete MLE, TPL)
     x_c:           float     # exponential cutoff scale (TPL), inf if unconstrained
     sigma_alpha:   float     # CI half-width proxy; see ci_method
@@ -115,13 +112,13 @@ class FitResult:
     gof_pvalue:    float     # goodness-of-fit p-value for the fitted TPL
     gof_method:    str       # "ks_heuristic" (fast path) or "semiparametric_bootstrap"
 
-    # Non-nested Vuong test: TPL vs log-normal (R_TPL/LN in paper tables)
+    # Non-nested Vuong test: TPL vs log-normal (R_TPL/LN, R > 0 favours TPL)
     lr_tpl_vs_ln:      float
     lr_tpl_vs_ln_p:    float
     # Non-nested Vuong test: TPL vs exponential
     lr_tpl_vs_exp:     float
     lr_tpl_vs_exp_p:   float
-    # Boundary-aware NESTED LRT: TPL vs PL (2*Delta-loglik, paper's 2Dl_TPL/PL)
+    # Boundary-aware NESTED LRT: TPL vs PL (2*Delta-loglik)
     lr_tpl_vs_pl:      float   # 2 * (loglik_TPL - loglik_PL)
     lr_tpl_vs_pl_p:    float   # boundary-aware (50:50 chi-bar-squared) p-value
 
@@ -131,7 +128,7 @@ class FitResult:
     tpl_beats_exponential: bool  # lr_tpl_vs_exp > 0 and p < 0.05
     tpl_beats_pl:          bool  # lr_tpl_vs_pl > 0 and p < 0.05 (truncation is real)
 
-    # Regime (paper Table 3)
+    # Regime classification
     regime: str   # collusion_risk | collective_intelligence | fragile_reasoning
 
     # Inequality — computed on TAIL DATA ONLY, consistent with other metrics
@@ -181,7 +178,7 @@ class FitResult:
         return self.lr_tpl_vs_pl_p
 
 
-# Alias: OBSERVABLES was previously named OBS_SPECS in some callers.
+# Alias: some callers use the name OBS_SPECS for this same metadata dict.
 OBS_SPECS = OBSERVABLES
 
 
@@ -229,7 +226,7 @@ def _x_c(tpl) -> float:
 
 def boundary_aware_lrt(fit) -> tuple[float, float]:
     """
-    Boundary-aware nested LRT: TPL vs PL (paper Sec. 3.3, "2Dl_TPL/PL").
+    Boundary-aware nested LRT: TPL vs PL.
 
     PL is TPL's boundary case (x_c -> inf / Lambda -> 0), so the null
     distribution of 2*Delta-loglik is a 50:50 mixture of a point mass at 0
@@ -275,8 +272,8 @@ def bootstrap_alpha_ci(
     seed: int = 0,
 ) -> tuple[float, float]:
     """
-    Run-clustered bootstrap 95% CI for alpha (paper: "run-clustered bootstrap
-    resampling"). Resamples whole runs with replacement (not individual
+    Run-clustered bootstrap 95% CI for alpha. Resamples whole runs with
+    replacement (not individual
     events), pools their data, and refits TPL at the fixed xmin each time --
     respecting the fact that events within a run are not independent samples.
     """
@@ -316,7 +313,7 @@ def semiparametric_gof(
 ) -> float:
     """
     Semiparametric bootstrap GOF test for the fitted TPL (Clauset et al. 2009
-    Sec. 5; paper Table 1's "GOF p"): generate n_sim synthetic tails from the
+    Sec. 5): generate n_sim synthetic tails from the
     fitted model, refit each, and take the fraction of synthetic KS distances
     >= the observed KS distance as the p-value. A high p-value means the
     fitted TPL is not rejected as implausible.
@@ -373,9 +370,9 @@ def fit_observable(
     xmin         Force lower cutoff (None = auto via KS minimisation).
     run_ids      Parallel array to `data` giving the run each sample came
                  from. If provided and n_bootstrap>0, alpha's 95% CI is
-                 computed via run-clustered bootstrap (paper methodology);
-                 otherwise falls back to the fast analytic sigma formula.
-    n_bootstrap  Number of bootstrap refits for the CI (paper-rigor default;
+                 computed via run-clustered bootstrap; otherwise falls back
+                 to the fast analytic sigma formula.
+    n_bootstrap  Number of bootstrap refits for the CI (statistically rigorous;
                  each refit costs ~1-3s, so this is meaningful cost for large
                  tails — set to 0 to skip and always use the fast analytic CI).
     n_gof_sim    Number of semiparametric GOF simulations (0 = skip, use the
@@ -428,8 +425,8 @@ def fit_observable(
     x_min = float(fit.xmin)
     x_max = float(arr.max())
 
-    # CI for alpha: run-clustered bootstrap (paper methodology) if run_ids
-    # are available and requested, else the fast analytic Clauset formula.
+    # CI for alpha: run-clustered bootstrap if run_ids are available and
+    # requested, else the fast analytic Clauset formula.
     sigma = (alpha - 1.0) / np.sqrt(n_tail)
     ci_method = "analytic"
     ci_lo, ci_hi = alpha - 1.96 * sigma, alpha + 1.96 * sigma
@@ -442,8 +439,8 @@ def fit_observable(
         if np.isfinite(boot_lo) and np.isfinite(boot_hi):
             ci_lo, ci_hi, ci_method = boot_lo, boot_hi, "run_clustered_bootstrap"
 
-    # GOF for the fitted TPL: semiparametric bootstrap (paper methodology) if
-    # requested, else the fast KS<0.1 heuristic.
+    # GOF for the fitted TPL: semiparametric bootstrap if requested, else
+    # the fast KS<0.1 heuristic.
     ks_stat = _ks_distance(tpl)
     gof_method = "ks_heuristic"
     gof_p = float("nan") if np.isnan(ks_stat) else (1.0 if ks_stat < 0.1 else 0.0)
@@ -543,14 +540,14 @@ def fit_all(
 
     run_ids, if provided, must have the same keys as event_observables, each
     a list parallel to that observable's data giving the source run id — used
-    for run-clustered bootstrap CIs (paper methodology).
+    for run-clustered bootstrap CIs.
 
     specs, min_n_total, min_n_tail are passed through to fit_observable() —
     see there (specs overrides OBSERVABLES; min_n_* relax the sample-size
     floor, e.g. for smoke tests).
 
     Holm-corrects lr_tpl_vs_ln_p and lr_tpl_vs_pl_p across the returned
-    observables (paper: "Holm-corrected across the five observables").
+    observables to control the family-wise error rate.
     """
     if verbose:
         print("Truncated power-law fitting (discrete MLE, Clauset-Newman-Shalizi):")
@@ -579,7 +576,7 @@ def fit_all(
 # ── DataFrame export ──────────────────────────────────────────
 
 def fits_to_dataframe(fits: Dict[str, FitResult]):
-    """Convert to pandas DataFrame for LaTeX export (paper Table 1)."""
+    """Convert to a pandas DataFrame for LaTeX/CSV export."""
     try:
         import pandas as pd
     except ImportError:
@@ -633,7 +630,7 @@ def powerlaw_ccdf_line(
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Theoretical CCDF for the fitted model, normalised to 1 at x_min.
-    Truncated power law (paper Eq. 4) by default (x_c=inf reduces to pure PL).
+    Truncated power law by default (x_c=inf reduces to pure PL).
 
     For the TPL case, alpha is typically > 1, making the survival integral's
     incomplete-gamma order negative — scipy.special.gammaincc only supports

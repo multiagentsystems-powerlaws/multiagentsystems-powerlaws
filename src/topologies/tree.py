@@ -10,8 +10,8 @@ Structure (example, 8 agents, B=2):
 
 Execution order: post-order (leaves first, supervisor last).
 
-Design (paper-faithful)
------------------------
+Design principles
+------------------
 Topology owns:
   - claim_id, parent_claim_ids, subtask_id (structural lineage)
   - AgentContextSpec construction
@@ -252,7 +252,7 @@ class TreeTopology(BaseTopology):
 
                 # ── LEAF: worker node ──────────────────────────────────
                 if is_leaf:
-                    # FIX 1: leaf depends on parent claim — NOT a new cascade root.
+                    # Leaf depends on the parent claim — not a new cascade root.
                     # parent_claim_ids = [parent_cid] so cascades propagate upward.
                     parent_cid    = _get_latest_claim(state, parent_id or SUPERVISOR_ID)
                     parent_output = state["agent_outputs"].get(parent_id or SUPERVISOR_ID, "")
@@ -286,8 +286,8 @@ class TreeTopology(BaseTopology):
                     )
                     user_content = build_context(spec)
 
-                    # FIX 2: event_type=None — leaf is NOT a root, NOT PROPOSE_CLAIM.
-                    # extractor infers from parent_claim_ids + reasoning content.
+                    # event_type=None — leaf is not a root, not a propose_claim event;
+                    # the extractor infers from parent_claim_ids + reasoning content.
                     output = self._call_llm(
                         agent_id=agent_id, agent_role=role,
                         system_prompt=f"You are a worker (depth {depth}) in a hierarchical MAS tree.",
@@ -338,9 +338,9 @@ class TreeTopology(BaseTopology):
                     )
                     user_content = build_context(spec)
 
-                    # FIX 5: supervisor root gets PROPOSE_CLAIM — it is the true cascade root.
-                    # Extractor also detects merge from parent_claim_ids >= 2, which is fine —
-                    # both signals are consistent. PROPOSE_CLAIM marks it as the top root.
+                    # Supervisor root gets propose_claim — it is the true cascade root.
+                    # The extractor also detects merge from parent_claim_ids >= 2, which is
+                    # fine — both signals are consistent, and propose_claim marks the top root.
                     output = self._call_llm(
                         agent_id=agent_id, agent_role=role,
                         system_prompt="You are the top-level supervisor. Synthesize all team reports.",
@@ -419,10 +419,9 @@ class TreeTopology(BaseTopology):
                         new_meta = _update_metadata_pointers(state, agent_id, claim_id, subtask_id)
 
                     else:
-                        # Decomposition phase: delegate to children
-                        # FIX 3: event_type=None in _call_llm.
-                        # Delegation is logged separately via _log_event (zero-token, correct).
-                        # FIX 7: use AgentContextSpec + build_context instead of raw f-string.
+                        # Decomposition phase: delegate to children.
+                        # event_type=None in _call_llm — delegation itself is logged
+                        # separately via _log_event (zero-token).
                         py_parent_claim_ids = []
                         root_claim_id       = claim_id
                         incoming_map: Dict[str, str] = {}
@@ -459,7 +458,6 @@ class TreeTopology(BaseTopology):
                             }
                             incoming_map[child] = child_subtask_id
 
-                        # FIX 7: AgentContextSpec for decomposition prompt
                         prior_cid = _get_latest_claim(state, parent_id or SUPERVISOR_ID)
                         prior_out = state["agent_outputs"].get(parent_id or SUPERVISOR_ID, "")
                         prior_outputs_list = (
@@ -488,7 +486,7 @@ class TreeTopology(BaseTopology):
                         )
                         user_content = build_context(spec)
 
-                        # FIX 3: event_type=None (not DELEGATE_SUBTASK in _call_llm)
+                        # event_type=None — delegation itself is logged separately via _log_event
                         output = self._call_llm(
                             agent_id=agent_id, agent_role=role,
                             system_prompt=f"You are a coordinator (depth {depth}). Decompose the task.",

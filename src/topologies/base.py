@@ -522,7 +522,7 @@ class BaseTopology(ABC):
         out_tokens = token_count_estimate(raw_text)
 
         # ── Parse ANSWER: line + trailing JSON metadata ───────────────
-        # Extract answer/reasoning from the paper's documented ANSWER: format
+        # Extract answer/reasoning from the ANSWER: line format
         # (Figure 10), and confidence/coordination_signals/provenance from an
         # optional trailing JSON metadata block. Do NOT extract event
         # semantics here — that belongs to event_extractor.

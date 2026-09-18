@@ -1,17 +1,17 @@
 """
 src/agents/llm_agent.py
 
-LLM agent node. Replaces the old version that emitted AgentEvent.
-Now emits TraceRow (from loggers/trace_schema.py) directly to events.jsonl.
+LLM agent node. Emits a validated TraceRow (loggers/trace_schema.py)
+directly to events.jsonl for every turn.
 
-Key changes from old version:
-  - Emits TraceRow, not AgentEvent — all claim_id, parent_claim_ids,
-    coordination_signals, subtask_id fields are present and logged.
-  - message_id is assigned here (orchestrator role), not by the LLM.
-  - Tools are executed here and results injected into the agent's context
-    before the LLM call, logged in tools_used and evidence_refs.
-  - AgentOutput is parsed and validated against trace_schema.AgentOutput.
-  - RunContext carries benchmark/topology/task_family for tool policy.
+Responsibilities:
+  - Builds and validates AgentOutput against trace_schema.AgentOutput,
+    so claim_id, parent_claim_ids, coordination_signals, and subtask_id
+    are always present and logged.
+  - Assigns message_id (an orchestrator responsibility, not the LLM's).
+  - Executes requested tools and injects results into the agent's context
+    before the LLM call, logging them in tools_used and evidence_refs.
+  - Carries benchmark/topology/task_family via RunContext for tool policy.
 """
 
 from __future__ import annotations

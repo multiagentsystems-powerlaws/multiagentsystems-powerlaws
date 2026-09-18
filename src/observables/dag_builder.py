@@ -22,8 +22,8 @@ Key design decisions:
   - TCE excludes the root node explicitly by claim_id comparison, not by
     event_type. This is safer: it does not rely on the root always being
     propose_claim (which holds in practice but is an assumption).
-  - Cascades are root-centered connected components, not temporal windows.
-    Paper wording: "root-centered cascade", not "temporal cascade".
+  - Cascades are root-centered connected components, not temporal windows —
+    "root-centered cascade", not "temporal cascade".
 
 Downstream:
   - observables/cascade_metrics.py  power-law observables

@@ -149,7 +149,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dry-run",        action="store_true",
                    help="Print job plan without running")
     p.add_argument("--dti",            action="store_true",
-                   help="Enable Deficit-Triggered Integration (paper Section 6)")
+                   help="Enable Deficit-Triggered Integration (see src/dti/dti.py)")
 
     return p.parse_args()
 

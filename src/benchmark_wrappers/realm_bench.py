@@ -144,7 +144,7 @@ def load_realm_tasks(
     that are parameterized variations of the same base scenario. Sampling
     all instances gives near-duplicate prompts. Instead we take instance_001
     from each problem folder, giving one genuinely distinct planning task
-    per problem type — matching the paper's reported pool of ~14 tasks.
+    per problem type, giving a pool of ~14 genuinely distinct tasks.
 
     All tasks map to task_family="planning" to match the 4-type taxonomy:
     qa / coding / reasoning / planning.

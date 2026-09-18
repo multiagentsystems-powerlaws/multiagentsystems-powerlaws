@@ -11,11 +11,11 @@ Design decisions (explicit):
   delegation_subtree_sizes:
     One sample per delegate_subtask event, sized as the subtask subtree
     rooted at that event's subtask_id. If multiple delegations occur along
-    the same branch, subtrees overlap. This is intentional: each delegation
-    event is a distinct observable sample for the power-law distribution,
-    consistent with the paper treating delegation cascade size as an
-    event-level quantity. If you want non-overlapping cascades, deduplicate
-    by taking only the topmost delegation per branch (not done here).
+    the same branch, subtrees overlap. This is intentional: delegation
+    cascade size is treated as an event-level quantity, so each delegation
+    event is a distinct observable sample for the power-law distribution.
+    If you want non-overlapping cascades, deduplicate by taking only the
+    topmost delegation per branch (not done here).
 
   revision_wave_sizes:
     Wave size = number of revise_claim events in the chain, NOT including
@@ -136,8 +136,8 @@ def _subtask_subtree_size(root_sid: str, tree: Dict[str, SubtaskNode]) -> int:
 def revision_wave_sizes(rows: List[dict]) -> List[int]:
     """
     Wave size = number of revise_claim events per revision_chain_id.
-    The original proposed claim is NOT included (consistent with TCE definition).
-    Paper figures/tables should state: "revision wave size excludes root claim."
+    The original proposed claim is NOT included (consistent with the TCE
+    definition): revision wave size excludes the root claim.
     """
     chain_counts: Dict[str, int] = defaultdict(int)
     for row in rows:

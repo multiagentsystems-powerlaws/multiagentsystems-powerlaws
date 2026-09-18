@@ -3,7 +3,7 @@ event_extraction/tce.py
 ------------------------
 Total Cognitive Effort (TCE) extraction at multiple granularities.
 
-TCE operationalisations used in the paper:
+TCE operationalisations at multiple granularities:
 
   TCE_run      = sum(tokens) over all events in one run
   TCE_event    = tokens_total_event for a single event

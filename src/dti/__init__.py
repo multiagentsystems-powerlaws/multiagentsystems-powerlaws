@@ -1,7 +1,7 @@
 """
 src/dti/
 
-Deficit-Triggered Integration (DTI) — paper Section 6 + Appendix C.
+Deficit-Triggered Integration (DTI).
 
 Public API:
     from dti import DTIMonitor, DTIParams

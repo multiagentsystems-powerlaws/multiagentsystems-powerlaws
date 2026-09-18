@@ -1,14 +1,14 @@
 """
 src/dti/dti.py
 
-Deficit-Triggered Integration (DTI) — paper Section 6 + Appendix C.
+Deficit-Triggered Integration (DTI).
 
 DTI is a cascade-local intervention that monitors the imbalance between
 expansion and integration within each active coordination cascade and
 triggers a forced merge when the deficit exceeds a condition-specific
 threshold.
 
-Algorithm (paper Algorithm 1 + Appendix C, Eq. A1–A5):
+Algorithm:
 ─────────────────────────────────────────────────────────────────────
 For each active root claim r, maintain local cascade state:
   t_r  — coordination events elapsed in current cascade segment
@@ -39,7 +39,7 @@ Design notes:
 - Each event incurs O(1) updates to (t_r, M_r).
 - No additional model calls except when deficit threshold is exceeded.
 - Parameters are fixed from baseline logs before intervention and contain
-  no outcome-tuned quantities (paper Appendix C).
+  no outcome-tuned quantities.
 - DTI does NOT alter agent prompts or capabilities. It intercepts the
   event stream between agent turns and injects a merge event when triggered.
 - The integration prompt consolidates active branch positions, identifies
@@ -96,14 +96,14 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class DTIParams:
     """
-    Condition-specific DTI parameters (paper Appendix C).
+    Condition-specific DTI parameters.
 
     All three are estimated from baseline coordination traces before
     intervention and remain fixed during the run — no outcome-tuned
     quantities.
 
     condition_key:  "{topology}_{task_family}"  e.g. "chain_reasoning"
-    beta_c:         contradiction scaling exponent (β̂_c ≈ 0.60, paper)
+    beta_c:         contradiction scaling exponent (β̂_c, default 0.60)
     a_c:            normalization constant (empirical pressure scale)
     delta_c:        deficit threshold = mean + 1σ of deficit at
                     cascade termination points
@@ -129,9 +129,9 @@ class DTIParams:
             log(M_r) = log(a_c) + β̂_c * log(t_r)
             → log(a_c) = mean(log(M_r) - β̂_c * log(t_r))
 
-        δ_c estimation (paper Appendix C):
-            "δ_c is defined as the mean plus one standard deviation of
-            the integration deficit observed at cascade termination points."
+        δ_c estimation:
+            δ_c is defined as the mean plus one standard deviation of the
+            integration deficit observed at cascade termination points.
             Deficit at termination = P_r(t_r_final) - M_r_final
             where P_r uses the estimated a_c.
         """
@@ -210,7 +210,7 @@ class DTIParams:
     ) -> "DTIParams":
         """
         Construct params directly when baseline estimation has not been run yet.
-        Use paper default β̂_c = 0.60; a_c and δ_c default to conservative values.
+        Defaults to β̂_c = 0.60; a_c and δ_c default to conservative values.
         """
         return cls(
             condition_key=f"{topology}_{task_family}",
@@ -234,7 +234,7 @@ class DTIParams:
 class _CascadeState:
     """
     Local state for one active root claim.  O(1) per event update.
-    Corresponds to (t_r, M_r) in paper Algorithm 1.
+    Tracks (t_r, M_r): elapsed cascade length and realized merge count.
     """
     root_claim_id: str
     t_r:           int = 0    # coordination events in current segment
@@ -292,7 +292,7 @@ def _build_integration_prompt(
 
 class DTIMonitor:
     """
-    Cascade-local DTI monitor (paper Algorithm 1).
+    Cascade-local DTI monitor.
 
     Receives every TraceRow via observe() immediately after it is logged.
     Maintains per-root-claim state (t_r, M_r). Triggers a merge integration
@@ -418,12 +418,12 @@ class DTIMonitor:
         state.trigger_count += 1
         self._n_triggers    += 1
 
-        # B_r: active branch heads (paper Eq. A4)
+        # B_r: active branch heads
         branch_outputs = list(state.branch_heads.values())
         if not branch_outputs:
             return None
 
-        # Build integration prompt (paper Appendix C)
+        # Build integration prompt
         user_content = _build_integration_prompt(
             branch_outputs=branch_outputs,
             root_task=self._root_task or self.task_id,
@@ -561,7 +561,7 @@ class DTIMonitor:
         state.m_r = 1
 
         # Reset branch heads to the merged claim — next expansion starts
-        # from the consolidated state (paper Appendix C, Eq. A5)
+        # from the consolidated state
         state.branch_heads = {"dti_synthesizer": merge_row}
 
         self._trigger_log.append({
@@ -595,7 +595,7 @@ def estimate_dti_params_from_sweep(
     Args:
         sweep_data_root:  root of completed baseline sweep (e.g. data/sweep/)
         conditions:       condition keys to estimate (None = all)
-        beta_c:           contradiction scaling exponent — use paper value
+        beta_c:           contradiction scaling exponent — use the default
                           0.60 or fit from your own data
         save_path:        if provided, save to JSON for reuse
 

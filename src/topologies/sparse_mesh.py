@@ -22,13 +22,10 @@ Power-law observables
 - Decentralized cascade size: how far does a single claim propagate
   through the sparse graph?
 
-PATCH vs original:
-  - Round node: replaced `peer_context as build_peer_ctx` + `user_content, _ = build_peer_ctx(...)`
-    with `build_context(AgentContextSpec(...))`. prior_outputs in new (aid, mid, cid, text) format.
-  - Synthesis node: replaced hand-built user_content string with build_context(AgentContextSpec(...)).
-  - Added topology="sparse_mesh", task_family=self.task_family, available_tools=self._tool_names.
-  - All other logic (graph construction, edge weights, activation, claim lineage,
-    state updates, graph wiring) is byte-for-byte identical to the original.
+Prompt construction:
+  - Both the per-round and synthesis nodes build their prompt via
+    build_context(AgentContextSpec(...)), with prior_outputs supplied as
+    (agent_id, message_id, claim_id, text) tuples.
 """
 
 from __future__ import annotations
@@ -154,7 +151,6 @@ class SparseMeshTopology(BaseTopology):
                         state, py_parent_claim_ids, claim_id, new_claims
                     )
 
-                    # PATCHED: build prior_outputs in new (aid, mid, cid, text) format
                     ptr_map = dict((state.get("metadata") or {}).get("latest_claim_by_agent") or {})
                     prior_outputs_list = [
                         (nb,
@@ -164,7 +160,6 @@ class SparseMeshTopology(BaseTopology):
                         for nb in neighbors_with_output
                     ]
 
-                    # PATCHED: AgentContextSpec + build_context replaces peer_context call
                     spec = AgentContextSpec(
                         task=state["task"],
                         agent_id=agent_id,
@@ -246,7 +241,6 @@ class SparseMeshTopology(BaseTopology):
                 state, all_agent_claim_ids, final_claim_id
             )
 
-            # PATCHED: prior_outputs in new format for synthesis context
             ptr_map = dict((state.get("metadata") or {}).get("latest_claim_by_agent") or {})
             active_agents = [aid for aid in ids if state["agent_outputs"].get(aid)]
             prior_outputs_list = [
@@ -257,7 +251,6 @@ class SparseMeshTopology(BaseTopology):
                 for aid in active_agents
             ]
 
-            # PATCHED: AgentContextSpec + build_context replaces hand-built user_content
             spec = AgentContextSpec(
                 task=state["task"],
                 agent_id=synthesizer,

@@ -2,7 +2,7 @@
 """
 scripts/run_visualizations.py
 ------------------------------
-Generate all 16 paper figures from sweep results.
+Generate all 16 result figures from sweep results.
 
 Usage
 -----

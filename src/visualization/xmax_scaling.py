@@ -3,7 +3,7 @@ src/visualization/xmax_scaling.py
 
 Scaling law plots: ⟨x_max⟩ vs N for each observable and topology.
 
-Paper Figure 7 (or equivalent):
+Extreme-value scaling figure:
   - x-axis: system size N (log scale)
   - y-axis: mean empirical maximum ⟨x_max⟩ across seeds (log scale)
   - One curve per topology

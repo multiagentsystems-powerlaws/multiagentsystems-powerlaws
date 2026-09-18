@@ -14,9 +14,9 @@ Classification rules (priority order):
 
   Merge is a structural fallback, not a first-pass filter. Contradiction and
   revision are checked first so that corrective multi-parent reconciliations
-  are classified as revisions rather than merges. This matches the paper's
-  modeling assumption: merge fan-in measures unconflicted synthesis, while
-  revision waves capture corrective dynamics.
+  are classified as revisions rather than merges — merge fan-in is defined
+  to measure unconflicted synthesis, while revision waves capture corrective
+  dynamics.
 
 Design philosophy:
   - Merge is structural, not semantic. Any claim with >=2 parents is a merge.
@@ -106,8 +106,8 @@ def infer_event_type(
     parent_subtask_id           = row.get("parent_subtask_id")
     reasoning: str              = row.get("reasoning_text", "") or ""
 
-    # Fix 1: read signals from top-level TraceRow fields, not a nested dict.
-    # TraceRow emits these as flat fields — "coordination_signals" is never
+    # Read signals from top-level TraceRow fields, not a nested dict —
+    # TraceRow emits these as flat fields; "coordination_signals" is never
     # populated as a nested dict in practice.
     signals = {
         "requested_subtask_creation":  row.get("requested_subtask_creation", False),
@@ -133,12 +133,12 @@ def infer_event_type(
     ):
         return DELEGATE
 
-    # Fix 2: non-claim rows return None — no claim_id means no claim event.
+    # Non-claim rows return None — no claim_id means no claim event.
     claim_id = row.get("claim_id")
     if not claim_id:
         return None
 
-    # Fix 3: contradiction and revision are checked BEFORE merge.
+    # Contradiction and revision are checked BEFORE merge.
     # Priority order matters: a corrective multi-parent row (explicit correction
     # citing 2 parents) should be REVISE, not MERGE. Merge is the structural
     # fallback for uncorrective multi-parent claims only.

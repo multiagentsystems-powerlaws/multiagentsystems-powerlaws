@@ -13,7 +13,7 @@ Pipeline per run:
   5. _analyze_events() → H2 metrics from events.jsonl
   6. RunMetadata flushed to run_metadata.json
 
-Task tree integration (paper Section H):
+Task tree integration:
   - TaskExpander stamps node.node_id as subtask_id in every TraceRow
   - dependency_dag governs prior_outputs visible per node (dep_context)
   - seed_nodes carry ground truth; accuracy scored against them
@@ -451,7 +451,7 @@ class GraphRunner:
             if hasattr(topo, "set_tool_names"):
                 topo.set_tool_names(tool_names)
 
-            # Deficit-Triggered Integration (paper Section 6 / Algorithm 1).
+            # Deficit-Triggered Integration (see src/dti/dti.py).
             # Monitors the event stream between topo.run() calls and injects
             # a merge event when the expansion-integration deficit exceeds
             # the condition-specific threshold. Disabled by default (baseline).
@@ -468,7 +468,7 @@ class GraphRunner:
                 )
                 dti.set_root_task(task.prompt)
 
-            # ── Task tree expansion (paper Section H) ──────────────────────
+            # ── Task tree expansion ──────────────────────────────────────
             # TaskExpander.build() produces:
             #   execution_pool: K*M nodes agents actually work on
             #   root_node:      synthesis node (depends on all seeds)

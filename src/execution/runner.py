@@ -62,7 +62,7 @@ class SweepConfig:
     max_steps:      int = 50
     model_name:     str = "gpt-4o-mini"
     temperature:    float = 0.7
-    dti_enabled:    bool = False   # Deficit-Triggered Integration (paper Section 6)
+    dti_enabled:    bool = False   # Deficit-Triggered Integration (see src/dti/dti.py)
 
 
 # ────────────────────────────────────────────────────────────────

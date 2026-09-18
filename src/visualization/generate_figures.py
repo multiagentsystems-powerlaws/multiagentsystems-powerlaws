@@ -2,7 +2,7 @@
 """
 scripts/generate_figures.py
 -----------------------------
-Generate all paper figures from sweep results.
+Generate all result figures from sweep results.
 
 Figures are saved as PDF + PNG to --out directory.
 Run after extract_events.py and run_analysis.py.
@@ -78,7 +78,7 @@ ALL_FIGS = [
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Generate all paper figures",
+        description="Generate all result figures",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )

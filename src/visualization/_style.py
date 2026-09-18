@@ -1,13 +1,13 @@
 """
 visualization/_style.py
 ------------------------
-Shared matplotlib style for all paper figures.
+Shared matplotlib style for all figures.
 Import this at the top of every visualization module.
 """
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-# Paper-ready style
+# Publication-ready style
 STYLE = {
     "font.family":       "serif",
     "font.serif":        ["Times New Roman", "DejaVu Serif", "serif"],
@@ -79,12 +79,12 @@ OBSERVABLE_LABELS = {
 
 
 def apply_style():
-    """Apply the paper style globally."""
+    """Apply the publication style globally."""
     plt.rcParams.update(STYLE)
 
 
-def paper_fig(nrows=1, ncols=1, width=7.0, height=None, **kwargs):
-    """Create a figure pre-configured for the paper."""
+def make_figure(nrows=1, ncols=1, width=7.0, height=None, **kwargs):
+    """Create a figure pre-configured with the publication style."""
     apply_style()
     if height is None:
         height = width * 0.65 * (nrows / max(ncols, 1))

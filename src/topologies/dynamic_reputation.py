@@ -10,8 +10,8 @@ Structure
   Over time, high-reputation agents attract more traffic → emergent
   elite agents → rich-get-richer → power-law influence distribution.
 
-Design (paper-faithful)
------------------------
+Design principles
+------------------
 Topology owns: structural lineage (claim_id, parent_claim_ids),
   routing logic (_softmax_sample), edge tracking, AgentContextSpec.
 Topology does NOT own: event_type for non-root turns → event_extractor.py,
@@ -169,7 +169,7 @@ class DynamicReputationTopology(BaseTopology):
                         for p in consulted_with_output
                     ]
 
-                    # FIX 2: no reputation scores in extra_context — agents reason independently.
+                    # No reputation scores in extra_context — agents reason independently.
                     # Routing is topology-level; agents do not see who was routed to them.
                     spec = AgentContextSpec(
                         task=state["task"],
@@ -190,7 +190,6 @@ class DynamicReputationTopology(BaseTopology):
                     )
                     user_content = build_context(spec)
 
-                    # FIX 1: clean _call_llm — no stray tokens, correct commas
                     output = self._call_llm(
                         agent_id=agent_id,
                         agent_role="peer",
@@ -277,7 +276,7 @@ class DynamicReputationTopology(BaseTopology):
                 for a in elite_agents if state["agent_outputs"].get(a)
             ]
 
-            # FIX 2: no reputation share in extra_context — synthesis is independent reasoning
+            # No reputation share in extra_context — synthesis is independent reasoning.
             spec = AgentContextSpec(
                 task=state["task"],
                 agent_id=synthesizer,
@@ -296,7 +295,6 @@ class DynamicReputationTopology(BaseTopology):
             )
             user_content = build_context(spec)
 
-            # FIX 1: clean synthesis _call_llm — correct commas, no stray tokens
             output = self._call_llm(
                 agent_id=synthesizer,
                 agent_role="elite_synthesizer",
