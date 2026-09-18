@@ -47,15 +47,7 @@ def parse_args():
     return p.parse_args()
 
 
-def build_llm(model, temperature):
-    if "gpt" in model or "o1" in model or "o3" in model:
-        from langchain_openai import ChatOpenAI
-        return ChatOpenAI(model=model, temperature=temperature)
-    if "claude" in model:
-        from langchain_anthropic import ChatAnthropic
-        return ChatAnthropic(model=model, temperature=temperature)
-    from langchain_openai import ChatOpenAI
-    return ChatOpenAI(model=model, temperature=temperature)
+from llm_factory import build_llm
 
 
 def run_single_agent(

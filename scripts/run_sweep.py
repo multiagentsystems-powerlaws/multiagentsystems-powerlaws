@@ -156,19 +156,7 @@ def parse_args() -> argparse.Namespace:
 # LLM factory
 # ─────────────────────────────────────────────────────────────────
 
-def build_llm(model_name: str, temperature: float):
-    name = model_name.lower()
-    if any(x in name for x in ("gpt", "o1", "o3", "o4")):
-        from langchain_openai import ChatOpenAI  # type: ignore
-        return ChatOpenAI(model=model_name, temperature=temperature)
-    if "claude" in name:
-        try:
-            from langchain_anthropic import ChatAnthropic  # type: ignore
-            return ChatAnthropic(model=model_name, temperature=temperature)
-        except ImportError:
-            raise ImportError("pip install langchain-anthropic")
-    from langchain_openai import ChatOpenAI  # type: ignore
-    return ChatOpenAI(model=model_name, temperature=temperature)
+from llm_factory import build_llm
 
 
 # ─────────────────────────────────────────────────────────────────

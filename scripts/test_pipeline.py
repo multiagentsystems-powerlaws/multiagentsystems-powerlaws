@@ -372,15 +372,8 @@ def test_real_llm_run(model: str, bench_filter: Optional[List[str]] = None):
         return True
 
     try:
-        if "gpt" in model.lower() or "o1" in model.lower():
-            from langchain_openai import ChatOpenAI  # type: ignore
-            llm = ChatOpenAI(model=model, temperature=0.7)
-        elif "claude" in model.lower():
-            from langchain_anthropic import ChatAnthropic  # type: ignore
-            llm = ChatAnthropic(model=model, temperature=0.7)
-        else:
-            from langchain_openai import ChatOpenAI  # type: ignore
-            llm = ChatOpenAI(model=model, temperature=0.7)
+        from llm_factory import build_llm
+        llm = build_llm(model, temperature=0.7)
     except ImportError as e:
         record("Real LLM run", "SKIP", f"LLM library not installed: {e}")
         return True

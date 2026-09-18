@@ -225,13 +225,8 @@ async def stage_sweep(cfg: dict) -> bool:
         return True
 
     # Build LLM
-    name = cfg["model"].lower()
-    if "claude" in name:
-        from langchain_anthropic import ChatAnthropic  # type: ignore
-        llm = ChatAnthropic(model=cfg["model"], temperature=cfg["temperature"])
-    else:
-        from langchain_openai import ChatOpenAI  # type: ignore
-        llm = ChatOpenAI(model=cfg["model"], temperature=cfg["temperature"])
+    from llm_factory import build_llm
+    llm = build_llm(cfg["model"], cfg["temperature"])
 
     sweep_cfg = SweepConfig(
         topologies=topologies,
