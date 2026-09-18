@@ -148,6 +148,8 @@ def parse_args() -> argparse.Namespace:
                    help="Skip runs where run_metadata.json already exists")
     p.add_argument("--dry-run",        action="store_true",
                    help="Print job plan without running")
+    p.add_argument("--dti",            action="store_true",
+                   help="Enable Deficit-Triggered Integration (paper Section 6)")
 
     return p.parse_args()
 
@@ -236,6 +238,7 @@ async def main() -> None:
         max_steps=args.max_steps,
         model_name=args.model,
         temperature=args.temperature,
+        dti_enabled=args.dti,
     )
 
     # Dry run

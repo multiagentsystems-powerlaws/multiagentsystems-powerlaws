@@ -65,6 +65,7 @@ from loggers.schemas import (
     RoutingStrategy, MemoryType,
 )
 from topologies import get_topology
+from dti.dti import DTIMonitor, DTIParams
 
 # PATCH: benchmark-native tool registry
 from tools.tools import get_tool_names_for_benchmark
@@ -360,6 +361,7 @@ class GraphRunner:
         max_steps:        int   = 50,
         model_name:       str   = "gpt-4o-mini",
         temperature:      float = 0.7,
+        dti_enabled:      bool  = False,
     ) -> None:
         self.llm              = llm
         self.data_root        = Path(data_root)
@@ -370,6 +372,7 @@ class GraphRunner:
         self.max_steps        = max_steps
         self.model_name       = model_name
         self.temperature      = temperature
+        self.dti_enabled      = dti_enabled
 
     def run(
         self,
@@ -447,6 +450,23 @@ class GraphRunner:
             tool_names = get_tool_names_for_benchmark(task.benchmark)
             if hasattr(topo, "set_tool_names"):
                 topo.set_tool_names(tool_names)
+
+            # Deficit-Triggered Integration (paper Section 6 / Algorithm 1).
+            # Monitors the event stream between topo.run() calls and injects
+            # a merge event when the expansion-integration deficit exceeds
+            # the condition-specific threshold. Disabled by default (baseline).
+            dti: Optional[DTIMonitor] = None
+            events_path = run_dir / "events.jsonl"
+            events_read_pos = 0
+            if self.dti_enabled:
+                dti = DTIMonitor(
+                    llm=self.llm, bus=bus, run_id=run_id,
+                    params=DTIParams.for_condition(tname.value, task.task_family),
+                    task_id=task.task_id, benchmark=task.benchmark,
+                    task_family=task.task_family, topology=tname.value,
+                    num_agents=num_agents, seed=seed,
+                )
+                dti.set_root_task(task.prompt)
 
             # ── Task tree expansion (paper Section H) ──────────────────────
             # TaskExpander.build() produces:
@@ -563,6 +583,20 @@ class GraphRunner:
                 node_answer = topo.run(node_prompt)
                 node_answers[node.node_id] = node_answer
 
+                if dti is not None and events_path.exists():
+                    with open(events_path, "r", encoding="utf-8") as ef:
+                        ef.seek(events_read_pos)
+                        new_lines = ef.readlines()
+                        events_read_pos = ef.tell()
+                    for line in new_lines:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            dti.observe(json.loads(line))
+                        except json.JSONDecodeError:
+                            pass
+
                 if node.node_type == "root":
                     answer = node_answer
 
@@ -651,6 +685,9 @@ class GraphRunner:
 
             activation_summary = getattr(topo, "_activation_summary", {})
             score, bench_extras = _score_task(answer, task, run_dir, run_id)
+
+            if dti is not None:
+                dti.log_stats(run_dir)
 
         except Exception:
             error = traceback.format_exc()

@@ -62,6 +62,7 @@ class SweepConfig:
     max_steps:      int = 50
     model_name:     str = "gpt-4o-mini"
     temperature:    float = 0.7
+    dti_enabled:    bool = False   # Deficit-Triggered Integration (paper Section 6)
 
 
 # ────────────────────────────────────────────────────────────────
@@ -145,6 +146,7 @@ class SweepRunner:
                     max_steps=config.max_steps,
                     model_name=config.model_name,
                     temperature=config.temperature,
+                    dti_enabled=config.dti_enabled,
                 )
                 t0 = time.time()
                 try:

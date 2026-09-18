@@ -118,6 +118,8 @@ def parse_args() -> argparse.Namespace:
                    help="Skip runs where run_metadata.json already exists")
     p.add_argument("--dry-run", action="store_true",
                    help="Print plan without running")
+    p.add_argument("--dti", action="store_true",
+                   help="Enable Deficit-Triggered Integration (paper Section 6)")
     return p.parse_args()
 
 
@@ -178,6 +180,7 @@ def resolve_config(args) -> dict:
         "out":        out,
         "stages":     stages,
         "dry_run":    args.dry_run,
+        "dti":        args.dti,
     }
 
 
@@ -238,6 +241,7 @@ async def stage_sweep(cfg: dict) -> bool:
         max_steps=cfg["max_steps"],
         model_name=cfg["model"],
         temperature=cfg["temperature"],
+        dti_enabled=cfg.get("dti", False),
     )
 
     runner  = SweepRunner(llm=llm, data_root=data_root)
