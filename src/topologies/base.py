@@ -35,6 +35,16 @@ from loggers.schemas import (
 )
 
 
+# Fields every _acall_llm-produced row must carry a non-None value for.
+# Downstream event_extraction/observables/tail_fitting rely on all of these
+# being present; a silently-missing field here only surfaces as a confusing
+# empty-observable or KeyError several pipeline stages later.
+REQUIRED_ROW_FIELDS = (
+    "run_id", "benchmark", "task_id", "topology", "agent_id",
+    "step_id", "event_type", "subtask_id", "claim_id", "tokens_total_event",
+)
+
+
 # ─────────────────────────────────────────────────────────────
 # Reducer helpers
 # ─────────────────────────────────────────────────────────────
@@ -635,6 +645,14 @@ class BaseTopology(ABC):
             "tokens_output":     out_tokens,
             "tokens_total_event": in_tokens + out_tokens,
         }
+
+        missing = [f for f in REQUIRED_ROW_FIELDS if row.get(f) is None]
+        if missing:
+            raise ValueError(
+                f"Event row for agent {agent_id} at step {self._step} is missing "
+                f"required field(s) {missing}. All _call_llm sites must populate "
+                f"these fields — see REQUIRED_ROW_FIELDS in base.py."
+            )
 
         # Write raw trace row
         self.bus.log(row)
