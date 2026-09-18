@@ -18,7 +18,10 @@ REALM-Bench/
 
 # Large experiment result/data dumps: not version-controlled, left on disk untouched by cleanup
 mas-results/
-data/raw_runs/
-data/smoke*/
-data/pipeline_test/
-data/*.json
+data/
+.DS_Store
+
+# claim-traces/ is the full ~2.7GB experimental trace dump (all runs, all
+# benchmarks/topologies/scales/seeds) -- ignored broadly, with a small
+# representative sample force-added instead (see claim-traces/README.md).
+claim-traces/

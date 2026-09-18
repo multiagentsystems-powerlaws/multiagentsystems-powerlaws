@@ -122,6 +122,7 @@ mas-powerlaws/
 ├── slurm/                       # SLURM job scripts for the distributed sweep
 ├── MARBLE/, REALM-Bench/        # Vendored third-party benchmark suites (not part of this codebase)
 ├── assets/figures/               # Figures used in this README, extracted from the paper PDF
+├── claim-traces/                 # Sample raw traces + pooled analysis output (see below)
 └── requirements.txt, .env.example
 ```
 
@@ -214,6 +215,14 @@ with KS-selected *x*<sub>min</sub>, boundary-aware nested LRT for
 truncated-vs-pure power law, run-clustered bootstrap confidence intervals,
 Holm-corrected multiple comparisons) is documented in the module docstrings
 of `src/tail_fitting/powerlaw_fit.py`.
+
+**Example data**: [`claim-traces/`](claim-traces/) contains a small sample
+of real raw traces (the same GAIA task run under all 7 topologies, plus
+one run per other benchmark) and the full pooled analysis output
+(reconstructed claim DAG, fitted tail statistics) — see
+[`claim-traces/README.md`](claim-traces/README.md) for details. The
+complete trace set (~2.7GB across ~2,000 runs) is not checked into this
+repository.
 
 ## Methodology at a glance
 
