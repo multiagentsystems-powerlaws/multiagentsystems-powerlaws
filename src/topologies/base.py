@@ -633,6 +633,7 @@ class BaseTopology(ABC):
             "action_success":    success,
             "tokens_input":      in_tokens,
             "tokens_output":     out_tokens,
+            "tokens_total_event": in_tokens + out_tokens,
         }
 
         # Write raw trace row

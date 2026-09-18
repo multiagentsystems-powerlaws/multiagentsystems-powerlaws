@@ -239,6 +239,7 @@ class FullMeshTopology(BaseTopology):
                         claim_status=None,  # post-hoc: extractor assigns revised/contradicted/merged
                         parent_claim_ids=py_parent_claim_ids,
                         root_claim_id=root_claim_id,
+                        subtask_id=claim_id,
                         visible_neighbors=[p for p in ids if p != agent_id],
                         num_agents_involved=len(ids) - 1,
                         # No fake endorsement fields
@@ -325,7 +326,7 @@ class FullMeshTopology(BaseTopology):
                 claim_depth=MAX_ROUNDS,
                 # Explicit ordered parent claim IDs — all agents
                 parent_claim_ids=all_agent_claim_ids,
-    
+                subtask_id=final_claim_id,
                 root_claim_id=root_claim_id,
     
     

@@ -14,4 +14,5 @@ REALM-Bench/
 mas-results/
 data/raw_runs/
 data/smoke*/
+data/pipeline_test/
 data/*.json

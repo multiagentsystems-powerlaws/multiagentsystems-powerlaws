@@ -218,6 +218,7 @@ class HybridModularTopology(BaseTopology):
                         claim_depth=1,
                         parent_claim_ids=py_parent_claim_ids,
                         root_claim_id=root_claim_id,
+                        subtask_id=claim_id,
                         visible_neighbors=peers,
                     )
 
@@ -291,6 +292,7 @@ class HybridModularTopology(BaseTopology):
                     claim_depth=2,
                     parent_claim_ids=community_member_cids,
                     root_claim_id=summary_root,
+                    subtask_id=summary_cid,
                     visible_neighbors=[INTEGRATOR_ID],
                 )
 
@@ -381,6 +383,7 @@ class HybridModularTopology(BaseTopology):
                 claim_depth=3,
                 parent_claim_ids=bridge_summary_cids,
                 root_claim_id=root_claim_id,
+                subtask_id=integrator_cid,
                 visible_neighbors=list(self._bridges),
             )
 

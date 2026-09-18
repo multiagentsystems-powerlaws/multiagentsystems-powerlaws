@@ -325,6 +325,7 @@ class StarTopology(BaseTopology):
                 state, worker_claim_ids,
                 fallback=state["metadata"].get("hub_root_claim_id") or final_claim_id,
             )
+            root_subtask_id  = state["metadata"].get("root_subtask_id") or new_id("sub")
 
 
             # PATCHED: prior_outputs with claim IDs
@@ -342,7 +343,7 @@ class StarTopology(BaseTopology):
                 topology="star",
                 task_family=self.task_family,
                 local_goal="Synthesize all worker outputs into one final answer. Resolve contradictions.",
-                subtask_id=new_id("sub"),
+                subtask_id=root_subtask_id,
                 step=self._step,
                 neighbor_ids=worker_ids,
                 prior_outputs=prior_outputs_list,
@@ -359,6 +360,7 @@ class StarTopology(BaseTopology):
                 claim_depth=2,
                 parent_claim_ids=worker_claim_ids,
                 root_claim_id=root_claim_id,
+                subtask_id=root_subtask_id,
                 visible_neighbors=worker_ids, num_agents_involved=len(worker_ids),
             )
 

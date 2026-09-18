@@ -254,6 +254,7 @@ class SparseMeshTopology(BaseTopology):
                         claim_status=None,  # post-hoc: extractor assigns revised/contradicted/merged
                         parent_claim_ids=py_parent_claim_ids,
                         root_claim_id=root_claim_id,
+                        subtask_id=claim_id,
                         visible_neighbors=neighbors,
                     )
 
@@ -347,6 +348,7 @@ class SparseMeshTopology(BaseTopology):
                 claim_depth=MAX_ROUNDS,
                 parent_claim_ids=all_agent_claim_ids,
                 root_claim_id=root_claim_id,
+                subtask_id=final_claim_id,
                 visible_neighbors=[a for a in adj.get(synthesizer, []) if a != synthesizer],
             )
 

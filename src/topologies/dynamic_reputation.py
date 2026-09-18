@@ -260,6 +260,7 @@ class DynamicReputationTopology(BaseTopology):
                         claim_depth=step_idx,
                         parent_claim_ids=py_parent_claim_ids,
                         root_claim_id=root_claim_id,
+                        subtask_id=claim_id,
                         visible_neighbors=consulted,
                     )
 
@@ -364,6 +365,7 @@ class DynamicReputationTopology(BaseTopology):
                 claim_depth=self.max_steps,
                 parent_claim_ids=elite_claim_ids,
                 root_claim_id=root_claim_id,
+                subtask_id=final_claim_id,
                 visible_neighbors=elite_agents,
             )
 
