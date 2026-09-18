@@ -1,4 +1,5 @@
 .env
+*.pdf
 venv/
 .conda/
 __pycache__/
