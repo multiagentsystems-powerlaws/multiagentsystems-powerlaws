@@ -73,45 +73,27 @@ def _load_observables(args) -> Dict[str, List[float]]:
         return obs
 
     if args.data_roots:
-        # Run extraction inline
+        # Run extraction inline via the shared paper-faithful pipeline
+        # (event_extractor -> resolve -> dag_builder -> cascade_metrics) --
+        # same implementation used by extract_events.py and main.py's
+        # stage_extract, not the coordination.py path (which gets
+        # delegation/revision/merge/TCE wrong — see pooled_observables.py).
         print("No pre-extracted observables found; running extraction...")
-        from event_extraction.coordination import (
-            _load_all_events, filter_events,
-            extract_delegation_cascades, extract_revision_waves,
-            extract_contradiction_bursts, extract_merge_fanin,
-            extract_influence_per_agent,
-        )
-        from event_extraction.tce import tce_per_run
-        from collections import defaultdict
+        from analysis.pooled_observables import pool_h1_observables
 
-        all_obs: Dict[str, List[float]] = defaultdict(list)
-        for root_str in args.data_roots:
-            root = Path(root_str)
-            if not root.exists():
-                continue
-            evs = filter_events(
-                _load_all_events(root),
-                topology=args.topology,
-                benchmark=args.benchmark,
-                num_agents=args.n,
-            )
-            for name, fn in {
-                "delegation_cascade":  extract_delegation_cascades,
-                "revision_wave":       extract_revision_waves,
-                "contradiction_burst": extract_contradiction_bursts,
-                "merge_fanin":         extract_merge_fanin,
-                "influence_per_agent": extract_influence_per_agent,
-            }.items():
-                all_obs[name].extend(fn(evs))
-            all_obs["tce_per_run"].extend(tce_per_run(root))
-        return dict(all_obs)
+        roots = [Path(r) for r in args.data_roots]
+        h1 = pool_h1_observables(
+            roots, topology_filter=args.topology, benchmark_filter=args.benchmark,
+            n_filter=args.n, verbose=args.verbose,
+        )
+        return h1["pooled"]
 
     print("ERROR: provide --observables or --data-roots")
     sys.exit(1)
 
 
 def _fit_result_to_dict(r: FitResult) -> Dict:
-    """Serialize FitResult to JSON-safe dict using new field names."""
+    """Serialize FitResult to JSON-safe dict (paper Table 1 fields)."""
     return {
         "observable":               r.observable,
         "n_total":                  r.n_total,
@@ -119,32 +101,28 @@ def _fit_result_to_dict(r: FitResult) -> Dict:
         "tail_fraction":            r.tail_fraction,
         "x_min":                    r.x_min,
         "alpha":                    r.alpha,
-        "sigma_alpha":              r.sigma_alpha,
+        "alpha_ci_low":             r.alpha_ci_low,
+        "alpha_ci_high":            r.alpha_ci_high,
+        "ci_method":                r.ci_method,
+        "x_c":                      r.x_c,
         # KS distance — NOT a p-value
-        "ks_statistic":             r.ks_statistic,
-        # LR tests
-        "lr_vs_lognormal":          r.lr_vs_lognormal,
-        "lr_vs_lognormal_p":        r.lr_vs_lognormal_p,
-        "lr_vs_exponential":        r.lr_vs_exponential,
-        "lr_vs_exponential_p":      r.lr_vs_exponential_p,
-        "lr_vs_truncated_pl":       r.lr_vs_truncated_pl,
-        "lr_vs_truncated_pl_p":     r.lr_vs_truncated_pl_p,
-        # Comparison labels
-        "comparison_vs_lognormal":    r.comparison_vs_lognormal,
-        "comparison_vs_exponential":  r.comparison_vs_exponential,
-        "comparison_vs_truncated_pl": r.comparison_vs_truncated_pl,
-        # AIC
-        "aic_powerlaw":             r.aic_powerlaw,
-        "aic_lognormal":            r.aic_lognormal,
-        "aic_exponential":          r.aic_exponential,
-        "aic_truncated_pl":         r.aic_truncated_pl,
-        "best_model_by_aic":        r.best_model_by_aic,
-        # OLS baseline
-        "ols_loglog_slope":         r.ols_loglog_slope,
+        "ks_stat":                  r.ks_stat,
+        # Semiparametric GOF for the fitted TPL
+        "gof_pvalue":               r.gof_pvalue,
+        "gof_method":               r.gof_method,
+        # Non-nested Vuong tests (TPL vs LN / exponential)
+        "lr_tpl_vs_ln":             r.lr_tpl_vs_ln,
+        "lr_tpl_vs_ln_p":           r.lr_tpl_vs_ln_p,
+        "lr_tpl_vs_exp":            r.lr_tpl_vs_exp,
+        "lr_tpl_vs_exp_p":          r.lr_tpl_vs_exp_p,
+        # Boundary-aware nested LRT (TPL vs PL)
+        "lr_tpl_vs_pl":             r.lr_tpl_vs_pl,
+        "lr_tpl_vs_pl_p":           r.lr_tpl_vs_pl_p,
         # Interpretability
-        "pl_plausible":             r.pl_plausible,
+        "tpl_plausible":            r.tpl_plausible,
+        "tpl_beats_lognormal":      r.tpl_beats_lognormal,
+        "tpl_beats_pl":             r.tpl_beats_pl,
         "regime":                   r.regime,
-        "quality_tag":              r.quality_tag,
         # Descriptives
         "mean":  r.mean,
         "median": r.median,
@@ -225,13 +203,13 @@ def main() -> None:
                 pass
 
     # ── Summary ───────────────────────────────────────────────────
-    n_pl  = sum(1 for r in fits.values() if r.pl_plausible)
-    n_aic = sum(1 for r in fits.values() if r.best_model_by_aic == "power_law")
+    n_tpl      = sum(1 for r in fits.values() if r.tpl_plausible)
+    n_beats_pl = sum(1 for r in fits.values() if r.tpl_beats_pl)
     print(f"\n{'='*60}")
     print(f"Analysis complete → {out}/")
     print(f"  Fitted: {len(fits)}/{len(obs)} observables")
-    print(f"  PL plausible:     {n_pl}")
-    print(f"  Best by AIC (PL): {n_aic}")
+    print(f"  TPL plausible (GOF):          {n_tpl}")
+    print(f"  TPL beats PL (truncation real): {n_beats_pl}")
     print(f"\nNext: python scripts/generate_tables.py --data-roots ... --analysis {out}")
 
 

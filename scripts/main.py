@@ -486,11 +486,10 @@ def stage_analyse(cfg: dict, obs: dict):
     fits = fit_all(obs, specs=OBS_SPECS, verbose=True,
                    min_n_total=min_n, min_n_tail=min_n)
 
-    n_pl  = sum(1 for r in fits.values() if r.pl_plausible)
-    n_sup = sum(1 for r in fits.values() if r.pl_supported)
-    n_aic = sum(1 for r in fits.values() if r.best_model_by_aic == "power_law")
-    print(f"\n  Fitted: {len(fits)}/{len(obs)}  PL plausible: {n_pl}  "
-          f"PL supported: {n_sup}  Best AIC: {n_aic}")
+    n_tpl = sum(1 for r in fits.values() if r.tpl_plausible)
+    n_beats_pl = sum(1 for r in fits.values() if r.tpl_beats_pl)
+    print(f"\n  Fitted: {len(fits)}/{len(obs)}  TPL plausible (GOF): {n_tpl}  "
+          f"TPL beats PL (truncation real): {n_beats_pl}")
 
     # Save JSON — cast numpy scalars to Python natives for JSON compat
     import numpy as _np
@@ -504,21 +503,19 @@ def stage_analyse(cfg: dict, obs: dict):
     fit_out = {}
     for k, r in fits.items():
         fit_out[k] = {fk: _to_native(fv) for fk, fv in {
-            "alpha": r.alpha, "sigma_alpha": r.sigma_alpha,
+            "alpha": r.alpha, "alpha_ci_low": r.alpha_ci_low, "alpha_ci_high": r.alpha_ci_high,
+            "ci_method": r.ci_method, "x_c": r.x_c,
             "x_min": r.x_min, "n_tail": r.n_tail,
             "tail_fraction": r.tail_fraction,
-            "ks_statistic": r.ks_statistic,
-            "comparison_vs_lognormal":    r.comparison_vs_lognormal,
-            "comparison_vs_exponential":  r.comparison_vs_exponential,
-            "comparison_vs_truncated_pl": r.comparison_vs_truncated_pl,
-            "aic_powerlaw": r.aic_powerlaw,
-            "aic_lognormal": r.aic_lognormal,
-            "best_model_by_aic": r.best_model_by_aic,
-            "ols_loglog_slope": r.ols_loglog_slope,
-            "pl_plausible": r.pl_plausible,
-            "pl_supported": r.pl_supported,
+            "ks_stat": r.ks_stat,
+            "gof_pvalue": r.gof_pvalue, "gof_method": r.gof_method,
+            "lr_tpl_vs_ln":  r.lr_tpl_vs_ln,  "lr_tpl_vs_ln_p":  r.lr_tpl_vs_ln_p,
+            "lr_tpl_vs_exp": r.lr_tpl_vs_exp, "lr_tpl_vs_exp_p": r.lr_tpl_vs_exp_p,
+            "lr_tpl_vs_pl":  r.lr_tpl_vs_pl,  "lr_tpl_vs_pl_p":  r.lr_tpl_vs_pl_p,
+            "tpl_plausible": r.tpl_plausible,
+            "tpl_beats_lognormal": r.tpl_beats_lognormal,
+            "tpl_beats_pl": r.tpl_beats_pl,
             "regime": r.regime,
-            "quality_tag": r.quality_tag,
             "gini": r.gini,
         }.items()}
     (analysis / "fit_results.json").write_text(json.dumps(fit_out, indent=2))
@@ -611,18 +608,18 @@ def stage_analyse(cfg: dict, obs: dict):
                         "n_tail":                    r.n_tail,
                         "tail_fraction":             r.tail_fraction,
                         "alpha":                     r.alpha,
-                        "sigma_alpha":               r.sigma_alpha,
+                        "alpha_ci_low":              r.alpha_ci_low,
+                        "alpha_ci_high":             r.alpha_ci_high,
+                        "x_c":                       r.x_c,
                         "x_min":                     r.x_min,
-                        "ks_statistic":              r.ks_statistic,
-                        "comparison_vs_lognormal":   r.comparison_vs_lognormal,
-                        "comparison_vs_exponential": r.comparison_vs_exponential,
-                        "comparison_vs_truncated_pl":r.comparison_vs_truncated_pl,
-                        "best_model_by_aic":         r.best_model_by_aic,
-                        "ols_loglog_slope":          r.ols_loglog_slope,
-                        "pl_plausible":              bool(r.pl_plausible),
-                        "pl_supported":              bool(r.pl_supported),
+                        "ks_stat":                   r.ks_stat,
+                        "lr_tpl_vs_ln":              r.lr_tpl_vs_ln,
+                        "lr_tpl_vs_exp":             r.lr_tpl_vs_exp,
+                        "lr_tpl_vs_pl":              r.lr_tpl_vs_pl,
+                        "gof_pvalue":                r.gof_pvalue,
+                        "tpl_plausible":             bool(r.tpl_plausible),
+                        "tpl_beats_pl":              bool(r.tpl_beats_pl),
                         "regime":                    r.regime,
-                        "quality_tag":               r.quality_tag,
                         "gini":                      r.gini,
                     })
 

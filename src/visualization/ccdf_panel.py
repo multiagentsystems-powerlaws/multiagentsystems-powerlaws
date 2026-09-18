@@ -143,7 +143,7 @@ def plot_ccdf_panel(
 
             # Power-law fit overlay (normalised to empirical at x_min)
             x_fit, ccdf_fit = powerlaw_ccdf_line(fit.x_min, float(max(x_emp)),
-                                                  fit.alpha)
+                                                  fit.alpha, x_c=getattr(fit, 'x_c', float('inf')))
             # Find empirical CCDF value at x_min for normalisation
             xm_idx = np.searchsorted(x_emp, fit.x_min, side="left")
             xm_idx = min(xm_idx, len(p_emp) - 1)
@@ -234,7 +234,7 @@ def plot_ccdf_by_topology(
         fit = topology_fits.get(topo, {}).get(observable)
         if fit is not None:
             x_fit, ccdf_fit = powerlaw_ccdf_line(fit.x_min, float(max(x_emp)),
-                                                  fit.alpha)
+                                                  fit.alpha, x_c=getattr(fit, 'x_c', float('inf')))
             xm_idx = np.searchsorted(x_emp, fit.x_min, side="left")
             xm_idx = min(xm_idx, len(p_emp) - 1)
             scale = p_emp[xm_idx]

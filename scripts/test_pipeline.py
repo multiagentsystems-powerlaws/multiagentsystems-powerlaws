@@ -508,28 +508,39 @@ def test_fitter():
         import numpy as np
         from tail_fitting.powerlaw_fit import fit_observable
 
-        # Generate synthetic power-law data with known alpha
+        # Generate synthetic TRUNCATED power-law data with known alpha, x_c.
+        # Pure (untruncated) Pareto data is the wrong smoke-test target now
+        # that the primary model is TPL (paper Eq. 4): fitting an extra free
+        # parameter (x_c) against data with no real cutoff is an inherently
+        # unstable edge case for the optimizer, not representative of the
+        # genuinely-truncated data this pipeline actually analyzes.
         rng        = np.random.default_rng(42)
-        true_alpha = 2.3
-        data       = list(rng.pareto(true_alpha - 1, 600) + 1.0)
+        true_alpha, true_xc = 2.3, 25.0
+        raw  = rng.pareto(true_alpha - 1, 20000) + 1.0
+        raw  = raw[raw < 500]
+        keep = rng.random(len(raw)) < np.exp(-raw / true_xc)
+        data = list(np.round(raw[keep]).astype(int))
 
-        result = fit_observable(data, "synthetic_pareto", verbose=False)
+        result = fit_observable(data, "synthetic_tpl", verbose=False)
 
         if result is None:
             record("Power-law fitter", "FAIL",
-                   "fit_observable returned None on 600-sample synthetic data")
+                   "fit_observable returned None on synthetic TPL data")
             return False
 
         alpha_err = abs(result.alpha - true_alpha)
-        ok        = alpha_err < 0.3  # within 0.3 of true value
+        xc_err    = abs(result.x_c - true_xc) / true_xc
+        ok        = alpha_err < 0.3 and xc_err < 0.5 and result.tpl_beats_pl
 
         record("Power-law fitter", "PASS" if ok else "WARN",
-               f"True α={true_alpha}  Fitted α={result.alpha:.3f}  "
-               f"Error={alpha_err:.3f}  n_tail={result.n_tail}\n"
-               f"KS p-value={result.ks_pvalue}  "
-               f"LR vs lognormal={result.lr_vs_lognormal:.3f}\n"
+               f"True α={true_alpha} x_c={true_xc}  "
+               f"Fitted α={result.alpha:.3f} x_c={result.x_c:.1f}  "
+               f"α_err={alpha_err:.3f}  x_c_relerr={xc_err:.2f}  n_tail={result.n_tail}\n"
+               f"GOF p={result.gof_pvalue}  "
+               f"R_TPL/LN={result.lr_tpl_vs_ln:.3f}  "
+               f"2Δℓ_TPL/PL={result.lr_tpl_vs_pl:.2f} (truncation detected: {result.tpl_beats_pl})\n"
                f"Regime: {result.regime}  "
-               f"PL plausible: {result.pl_plausible}")
+               f"TPL plausible: {result.tpl_plausible}")
         return True
 
     except Exception as e:
