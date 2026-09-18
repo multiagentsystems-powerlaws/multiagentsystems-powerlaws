@@ -192,7 +192,12 @@ class TraceRow(BaseModel):
 #   - coordination_signals optional, never fabricated
 
 AGENT_OUTPUT_FORMAT = """\
-Output exactly one JSON object with these fields:
+Output format:
+Provide your reasoning, then a final answer labeled:
+ANSWER: <your answer>
+
+After the ANSWER line, include one JSON object with coordination metadata
+(never fabricate — leave fields at their default when not naturally applicable):
 
 {
   "claim_id": "<new unique id, e.g. claim_abc123>",
@@ -203,11 +208,7 @@ Output exactly one JSON object with these fields:
     "assigned_by": "<agent_id that assigned this, or null>",
     "status": "active"
   },
-  "content": {
-    "reasoning": "<concise reasoning summary>",
-    "answer": "<your best current answer>",
-    "confidence": <0.0 to 1.0>
-  },
+  "confidence": <0.0 to 1.0>,
   "provenance": {
     "references_used": ["<message_ids you used>"],
     "claims_referenced": ["<claim_ids you referenced>"],
@@ -222,7 +223,5 @@ Output exactly one JSON object with these fields:
     "explicit_correction_of": [],
     "supports_claims": []
   }
-}
-
-Fill coordination_signals only when naturally applicable — do not fabricate.\
+}\
 """

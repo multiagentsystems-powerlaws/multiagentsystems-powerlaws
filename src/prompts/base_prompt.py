@@ -36,6 +36,7 @@ Core behaviors:
 - When uncertain, state the uncertainty and continue with the best grounded answer.
 
 Output format:
-Return one JSON object only with the fields specified in your current context.
-Do not output any text outside the JSON object.
+Provide reasoning followed by a final answer labeled: ANSWER: <your answer>.
+Then include one JSON object with the coordination metadata fields specified
+in your current context.
 """

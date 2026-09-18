@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import re
 import time
 import traceback
 import uuid
@@ -520,15 +521,22 @@ class BaseTopology(ABC):
         in_tokens  = token_count_estimate(system_prompt + user_content)
         out_tokens = token_count_estimate(raw_text)
 
-        # ── Parse JSON for text content only ─────────────────────────
-        # Extract answer/reasoning/confidence from agent output.
-        # Do NOT extract event semantics here — that belongs to event_extractor.
+        # ── Parse ANSWER: line + trailing JSON metadata ───────────────
+        # Extract answer/reasoning from the paper's documented ANSWER: format
+        # (Figure 10), and confidence/coordination_signals/provenance from an
+        # optional trailing JSON metadata block. Do NOT extract event
+        # semantics here — that belongs to event_extractor.
         answer     = raw_text
         reasoning  = ""
         confidence = None
         raw_coordination_signals: dict = {}
         raw_claim_id_from_llm:    str  = ""
         raw_parent_claim_ids_from_llm: list = []
+
+        answer_match = re.search(r"ANSWER:\s*(.+?)(?:\n|$)", raw_text, re.IGNORECASE)
+        if answer_match:
+            answer    = answer_match.group(1).strip()
+            reasoning = raw_text[:answer_match.start()].strip()
 
         text = raw_text.strip()
         for fence in ("```json", "```"):
@@ -542,8 +550,11 @@ class BaseTopology(ABC):
             try:
                 parsed = _json.loads(text[start:end+1])
                 content = parsed.get("content") or {}
-                answer     = content.get("answer") or parsed.get("answer") or raw_text
-                reasoning  = content.get("reasoning") or parsed.get("reasoning") or ""
+                # Backward compat: honor the older content.answer/content.reasoning
+                # shape when no ANSWER: line was found (e.g. un-migrated stubs).
+                if not answer_match:
+                    answer    = content.get("answer") or parsed.get("answer") or raw_text
+                    reasoning = content.get("reasoning") or parsed.get("reasoning") or ""
                 confidence = content.get("confidence") or parsed.get("confidence")
                 raw_coordination_signals = parsed.get("coordination_signals") or {}
                 # Capture agent-generated claim lineage hints (for provenance only)
