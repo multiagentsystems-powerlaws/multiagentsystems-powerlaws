@@ -258,66 +258,32 @@ async def stage_sweep(cfg: dict) -> bool:
 # ─────────────────────────────────────────────────────────────────
 
 def stage_extract(cfg: dict) -> dict:
-    from event_extraction.coordination import (
-        _load_all_events, filter_events,
-        extract_delegation_cascades, extract_revision_waves,
-        extract_contradiction_bursts, extract_merge_fanin,
-        extract_influence_per_agent,
-    )
-    from event_extraction.tce import tce_per_run
-    from collections import defaultdict
+    from analysis.pooled_observables import pool_h1_observables
 
     data_roots   = cfg["data_roots"]
     extracted    = cfg["out"] / "extracted"
     extracted.mkdir(parents=True, exist_ok=True)
 
-    extractors = {
-        "delegation_cascade":  extract_delegation_cascades,
-        "revision_wave":       extract_revision_waves,
-        "contradiction_burst": extract_contradiction_bursts,
-        "merge_fanin":         extract_merge_fanin,
-        "influence_per_agent": extract_influence_per_agent,
-    }
+    # ── Pool + per-group observables (paper-faithful pipeline) ─────
+    existing_roots = [r for r in data_roots if r.exists()]
+    for r in data_roots:
+        if r not in existing_roots:
+            print(f"    SKIP (not found): {r}")
 
-    # ── Pool + per-group observables ──────────────────────────────
-    pooled: dict         = defaultdict(list)
-    by_group: dict       = {}
-    run_rows: list       = []
-    event_count_total    = 0
+    print(f"\n  Scanning {len(existing_roots)} data root(s)...")
+    h1 = pool_h1_observables(
+        existing_roots,
+        topology_filter=cfg.get("topology_filter"),
+        benchmark_filter=cfg.get("benchmark_filter"),
+        n_filter=cfg.get("n_filter"),
+        verbose=True,
+    )
+    pooled   = h1["pooled"]
+    by_group = h1["by_group"]
 
-    print(f"\n  Scanning {len(data_roots)} data root(s)...")
-    for root in data_roots:
-        if not root.exists():
-            print(f"    SKIP (not found): {root}")
-            continue
-
+    run_rows: list = []
+    for root in existing_roots:
         bench = root.name
-        all_events = _load_all_events(root)
-        event_count_total += len(all_events)
-        print(f"    {bench}: {len(all_events)} events")
-
-        if not all_events:
-            continue
-
-        # Per-topology per-N groups
-        groups: dict = defaultdict(list)
-        for ev in all_events:
-            topo = ev.get("topology", "unknown")
-            n    = ev.get("num_agents", 0)
-            groups[(topo, bench, n)].append(ev)
-
-        # Pooled observables
-        for name, fn in extractors.items():
-            sizes = fn(all_events)
-            pooled[name].extend(sizes)
-        pooled["tce_per_run"].extend(tce_per_run(root))
-
-        # Per-group
-        for (topo, b, n), evs in groups.items():
-            key = f"{topo}__{b}__n{n}"
-            by_group[key] = {}
-            for name, fn in extractors.items():
-                by_group[key][name] = fn(evs)
 
         # H2 run metrics
         for meta_path in sorted(root.rglob("run_metadata.json")):
@@ -365,8 +331,7 @@ def stage_extract(cfg: dict) -> dict:
             except Exception:
                 pass
 
-    print(f"\n  Total events: {event_count_total}")
-    print(f"  Run records:  {len(run_rows)}")
+    print(f"\n  Run records:  {len(run_rows)}")
     print("\n  H1 observable counts:")
     for name, sizes in sorted(pooled.items()):
         import numpy as np

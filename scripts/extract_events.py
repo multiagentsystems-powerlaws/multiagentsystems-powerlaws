@@ -43,20 +43,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from event_extraction.coordination import (
-    _load_all_events, filter_events,
-    extract_delegation_cascades, extract_revision_waves,
-    extract_contradiction_bursts, extract_merge_fanin,
-    extract_influence_per_agent,
-    extract_tce_per_run_from_events,
     PRIMARY_OBSERVABLES, SECONDARY_OBSERVABLES, EXPLORATORY_OBSERVABLES,
-)
-from event_extraction.tce import (
-    tce_per_run, tce_per_event, tce_per_agent_per_run,
-    tce_per_cascade, tce_per_revision_wave,
 )
 from event_extraction.graph_builder import (
     extract_graph_rows, graph_observables_from_tables,
 )
+from analysis.pooled_observables import pool_h1_observables, CORE_OBSERVABLE_KEYS
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -125,15 +117,6 @@ def _describe(sizes: List[float]) -> Dict[str, float]:
 # H1 observables per (topology, benchmark, N)
 # ─────────────────────────────────────────────────────────────────
 
-H1_EXTRACTORS = {
-    "delegation_cascade":  extract_delegation_cascades,
-    "revision_wave":       extract_revision_waves,
-    "contradiction_burst": extract_contradiction_bursts,
-    "merge_fanin":         extract_merge_fanin,
-    "influence_per_agent": extract_influence_per_agent,
-}
-
-
 def extract_h1_observables(
     roots: List[Path],
     topology_filter: Optional[str],
@@ -141,102 +124,12 @@ def extract_h1_observables(
     n_filter: Optional[int],
     verbose: bool,
 ) -> Dict[str, Any]:
-    """
-    Extract H1 observables at three granularities:
-      - pooled (all runs merged)
-      - per topology
-      - per (topology, benchmark, N)
-    """
+    """Thin wrapper over analysis.pooled_observables.pool_h1_observables."""
     print("\n── H1: Extracting coordination observables ──────────────────")
-
-    # Collect events grouped by (topology, benchmark, num_agents)
-    groups: Dict[tuple, List[Dict]] = defaultdict(list)
-    for root in roots:
-        if not root.exists():
-            continue
-        all_evs = _load_all_events(root)
-        filtered = filter_events(
-            all_evs,
-            topology=topology_filter,
-            benchmark=benchmark_filter,
-            num_agents=n_filter,
-        )
-        for ev in filtered:
-            key = (
-                ev.get("topology", "unknown"),
-                ev.get("benchmark", "unknown"),
-                ev.get("num_agents", 0),
-            )
-            groups[key].append(ev)
-
-    # TCE per run (file-level, not event-level)
-    tce_by_group: Dict[tuple, List[float]] = defaultdict(list)
-    for root in roots:
-        if not root.exists():
-            continue
-        for meta_path in root.rglob("run_metadata.json"):
-            try:
-                meta  = json.loads(meta_path.read_text())
-                topo  = meta.get("run_id", "").split("__")[1] if "__" in meta.get("run_id","") else "unknown"
-                bench = meta.get("run_id", "").split("__")[0] if "__" in meta.get("run_id","") else "unknown"
-                n     = meta.get("run_id", "").split("__")[2].replace("n","") if "__" in meta.get("run_id","") else "0"
-                key   = (topo, bench, int(n) if n.isdigit() else 0)
-                tokens = meta.get("tokens_total", 0)
-                if tokens > 0:
-                    tce_by_group[key].append(float(tokens))
-            except Exception:
-                pass
-
-    result: Dict[str, Any] = {
-        "pooled":   {},
-        "by_topo":  {},
-        "by_group": {},
-    }
-
-    all_events_flat: List[Dict] = []
-    for evs in groups.values():
-        all_events_flat.extend(evs)
-
-    # Pooled
-    for obs_name, extractor in H1_EXTRACTORS.items():
-        sizes = extractor(all_events_flat)
-        result["pooled"][obs_name] = sizes
-        if verbose:
-            print(f"  pooled/{obs_name:<24} n={len(sizes):6d}  "
-                  f"xmax={_xmax(sizes):.1f}")
-
-    # TCE pooled
-    all_tce = [v for vals in tce_by_group.values() for v in vals]
-    result["pooled"]["tce_per_run"] = all_tce
-    if verbose:
-        print(f"  pooled/tce_per_run             n={len(all_tce):6d}  "
-              f"xmax={_xmax(all_tce):.1f}")
-
-    # Per topology
-    topo_events: Dict[str, List[Dict]] = defaultdict(list)
-    for (topo, bench, n), evs in groups.items():
-        topo_events[topo].extend(evs)
-
-    for topo, evs in topo_events.items():
-        result["by_topo"][topo] = {}
-        for obs_name, extractor in H1_EXTRACTORS.items():
-            sizes = extractor(evs)
-            result["by_topo"][topo][obs_name] = sizes
-        tce_all = [v for (t, b, n), vals in tce_by_group.items()
-                   if t == topo for v in vals]
-        result["by_topo"][topo]["tce_per_run"] = tce_all
-
-    # Per group
-    for (topo, bench, n), evs in groups.items():
-        key_str = f"{topo}__{bench}__n{n}"
-        result["by_group"][key_str] = {}
-        for obs_name, extractor in H1_EXTRACTORS.items():
-            result["by_group"][key_str][obs_name] = extractor(evs)
-        result["by_group"][key_str]["tce_per_run"] = tce_by_group.get((topo, bench, n), [])
-
-    n_groups = len(result["by_group"])
-    print(f"  Extracted {n_groups} (topology, benchmark, N) groups")
-    return result
+    return pool_h1_observables(
+        roots, topology_filter=topology_filter, benchmark_filter=benchmark_filter,
+        n_filter=n_filter, verbose=verbose,
+    )
 
 
 # ─────────────────────────────────────────────────────────────────

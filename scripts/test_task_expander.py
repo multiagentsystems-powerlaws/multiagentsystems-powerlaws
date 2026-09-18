@@ -190,7 +190,7 @@ def print_allocation(tree):
     print(f"  Root budget          : {tree.root_node.agent_budget}")
     print(f"  Pool budgets         : min={min(budgets)}  max={max(budgets)}  "
           f"avg={sum(budgets)/len(budgets):.2f}")
-    print(f"  Active agent frac    : {tree.active_agent_fraction():.1%}  "
+    print(f"  Active agent frac    : {tree.allocated_agent_fraction():.1%}  "
           f"(paper target >80%)")
 
 
@@ -206,8 +206,9 @@ def run_checks(tree, pool_size: int, N: int) -> list[str]:
     if total != N:
         fails.append(f"Agent sum {total} != N={N}")
 
-    # 2. Root depends on exactly the K seed nodes
-    exp_root = {n.node_id for n in tree.seed_nodes}
+    # 2. Root depends on exactly the expanded nodes (fix #3: seeds are
+    # never executed, so root cannot synthesise from their outputs).
+    exp_root = {n.node_id for n in tree.expanded_nodes}
     got_root = set(tree.root_node.depends_on)
     if got_root != exp_root:
         fails.append(f"Root deps wrong — missing:{exp_root-got_root}  extra:{got_root-exp_root}")
@@ -382,13 +383,13 @@ def test_all(benchmarks: list[str]) -> bool:
             except Exception as e:
                 fails = [str(e)]
                 ok    = False
-                m     = {"K":0,"M":0,"pool_size":0,"active_agent_fraction":0,"max_dag_depth":0}
+                m     = {"K":0,"M":0,"pool_size":0,"allocated_agent_fraction":0,"max_dag_depth":0}
 
             if not ok:
                 all_ok = False
             print(f"  {bench:20s}  {N:>4}  {m['K']:>2}  {m['M']:>3}  "
                   f"{m['pool_size']:>5}  {'PASS' if ok else 'FAIL':>6}  "
-                  f"{m['active_agent_fraction']:>5.0%}  {m['max_dag_depth']:>5}")
+                  f"{m['allocated_agent_fraction']:>5.0%}  {m['max_dag_depth']:>5}")
             for f in fails:
                 print(f"      x  {f}")
 

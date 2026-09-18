@@ -37,8 +37,6 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set, Tuple
 
-from rich.tree import node
-
 from loggers.trace_schema import EventType
 
 

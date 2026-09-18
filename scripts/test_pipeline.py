@@ -446,8 +446,13 @@ def test_real_llm_run(model: str, bench_filter: Optional[List[str]] = None):
 # ═════════════════════════════════════════════════════════════════════════
 def test_extraction():
     section("Stage 7: Event extraction")
-    from event_extraction.coordination import extract_all_observables
-    from event_extraction.tce import compute_all_tce
+    # Paper-faithful per-run pipeline (event_extractor -> resolve ->
+    # dag_builder -> cascade_metrics), pooled across all run directories
+    # found under root. Building the DAG per-run (not on one global flat
+    # event list) is required: claim_id/subtask_id are not guaranteed
+    # unique across different runs.
+    from analysis.run_pipeline import process_run
+    from event_extraction.coordination import extract_influence_per_agent, _load_all_events
 
     # Use whichever test data was generated
     roots = [
@@ -463,8 +468,23 @@ def test_extraction():
         return True
 
     try:
-        obs = extract_all_observables(root)
-        tce = compute_all_tce(root)
+        obs: Dict[str, list] = {
+            "delegation_cascade": [], "revision_wave": [],
+            "contradiction_burst": [], "merge_fanin": [], "tce_per_run": [],
+        }
+        legacy_key = {
+            "delegation_sizes": "delegation_cascade",
+            "revision_waves": "revision_wave",
+            "contradiction_bursts": "contradiction_burst",
+            "merge_fan_in": "merge_fanin",
+            "tce": "tce_per_run",
+        }
+        for events_file in sorted(root.rglob("events.jsonl")):
+            run_obs = process_run(events_file.parent)
+            for new_key, vals in run_obs["event_observables"].items():
+                obs[legacy_key[new_key]].extend(vals)
+
+        obs["influence_per_agent"] = extract_influence_per_agent(_load_all_events(root))
 
         populated = {k: len(v) for k, v in obs.items() if v}
         empty     = [k for k, v in obs.items() if not v]
