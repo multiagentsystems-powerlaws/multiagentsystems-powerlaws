@@ -36,7 +36,10 @@ from typing import Any, Dict, List, Optional, Tuple
 from langchain_core.messages import AIMessage
 from langgraph.graph import StateGraph, END
 
-from .base import BaseTopology, MASState, make_agent_id, new_id, text_hash
+from .base import (
+    BaseTopology, MASState, make_agent_id, new_id, text_hash,
+    _ordered_claim_ids, _root_claim_from_parents, _update_meta,
+)
 from context_builder import build_context, AgentContextSpec
 from loggers.schemas import EventType, TopologyName
 
@@ -73,64 +76,6 @@ def _softmax_sample(
                 remaining = [(x, p) for x, p in remaining if x != cid]
                 break
     return chosen
-
-
-def _ordered_claim_ids(
-    state: MASState,
-    agent_ids: List[str],
-    new_claims: Optional[Dict] = None,
-) -> List[str]:
-    ptr_map = dict(state.get("metadata", {}).get("latest_claim_by_agent") or {})
-    if new_claims:
-        for cid, cdata in new_claims.items():
-            if isinstance(cdata, dict) and cdata.get("agent_id"):
-                ptr_map[cdata["agent_id"]] = cdata.get("claim_id", cid)
-    result   = []
-    combined = dict(state["claims"])
-    if new_claims:
-        combined.update(new_claims)
-    for aid in agent_ids:
-        cid = ptr_map.get(aid)
-        if not cid:
-            for k, v in reversed(list(combined.items())):
-                if isinstance(v, dict) and v.get("agent_id") == aid:
-                    cid = v.get("claim_id", k)
-                    break
-        if cid:
-            result.append(cid)
-    return result
-
-
-def _root_claim_from_parents(
-    state: MASState,
-    parent_claim_ids: List[str],
-    fallback: str,
-    new_claims: Optional[Dict] = None,
-) -> str:
-    if not parent_claim_ids:
-        return fallback
-    combined = dict(state["claims"])
-    if new_claims:
-        combined.update(new_claims)
-    cdata = combined.get(parent_claim_ids[0])
-    if isinstance(cdata, dict) and cdata.get("root_claim_id"):
-        return cdata["root_claim_id"]
-    return parent_claim_ids[0]
-
-
-def _update_meta(
-    state: MASState,
-    claim_updates: Optional[Dict[str, str]] = None,
-    extra: Optional[Dict] = None,
-) -> Dict:
-    meta = dict(state.get("metadata") or {})
-    if claim_updates:
-        lcba = dict(meta.get("latest_claim_by_agent") or {})
-        lcba.update(claim_updates)
-        meta["latest_claim_by_agent"] = lcba
-    if extra:
-        meta.update(extra)
-    return meta
 
 
 class DynamicReputationTopology(BaseTopology):

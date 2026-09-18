@@ -15,6 +15,7 @@ from langgraph.graph import StateGraph, END
 from .base import (
     BaseTopology, MASState,
     make_agent_id, new_id, text_hash,
+    _ordered_claim_ids, _root_claim_from_parents, _update_meta,
 )
 from context_builder import build_context, AgentContextSpec   # PATCHED
 from loggers.schemas import EventType, TopologyName
@@ -30,62 +31,6 @@ def _get_latest_claim(state: MASState, agent_id: str) -> Optional[str]:
         if isinstance(cdata, dict) and cdata.get("agent_id") == agent_id:
             return cdata.get("claim_id", cid)
     return None
-
-
-def _ordered_claim_ids(
-    state: MASState,
-    agent_ids: List[str],
-    new_claims: Optional[Dict] = None,
-) -> List[str]:
-    ptr_map = dict(state.get("metadata", {}).get("latest_claim_by_agent") or {})
-    if new_claims:
-        for cid, cdata in new_claims.items():
-            if isinstance(cdata, dict) and cdata.get("agent_id"):
-                ptr_map[cdata["agent_id"]] = cdata.get("claim_id", cid)
-    result = []
-    for aid in agent_ids:
-        cid = ptr_map.get(aid)
-        if not cid:
-            combined = dict(state["claims"])
-            if new_claims:
-                combined.update(new_claims)
-            for k, v in reversed(list(combined.items())):
-                if isinstance(v, dict) and v.get("agent_id") == aid:
-                    cid = v.get("claim_id", k)
-                    break
-        if cid:
-            result.append(cid)
-    return result
-
-
-def _root_claim_from_parents(state, parent_claim_ids, fallback, new_claims=None):
-    if not parent_claim_ids:
-        return fallback
-    combined = dict(state["claims"])
-    if new_claims:
-        combined.update(new_claims)
-    cdata = combined.get(parent_claim_ids[0])
-    if isinstance(cdata, dict) and cdata.get("root_claim_id"):
-        return cdata["root_claim_id"]
-    return parent_claim_ids[0]
-
-
-def _update_meta(state, claim_updates=None, incoming_subtask=None,
-                 hub_root_claim_id=None, extra=None):
-    meta = dict(state.get("metadata") or {})
-    if claim_updates:
-        lcba = dict(meta.get("latest_claim_by_agent") or {})
-        lcba.update(claim_updates)
-        meta["latest_claim_by_agent"] = lcba
-    if incoming_subtask:
-        inc = dict(meta.get("incoming_subtask") or {})
-        inc.update(incoming_subtask)
-        meta["incoming_subtask"] = inc
-    if hub_root_claim_id:
-        meta["hub_root_claim_id"] = hub_root_claim_id
-    if extra:
-        meta.update(extra)
-    return meta
 
 
 class StarTopology(BaseTopology):

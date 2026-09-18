@@ -91,6 +91,86 @@ def text_hash(text: str) -> str:
 def new_id(prefix: str = "id") -> str:
     return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
+
+# Claim/metadata lineage helpers shared by the "batch" topologies (star,
+# full_mesh, sparse_mesh, hybrid, dynamic_reputation), which build claims for
+# several agents inside one graph-node call before committing state. tree.py
+# processes one agent per graph node — children are always committed by a
+# prior step before their parent runs — so it never needs the new_claims
+# lookahead buffer these use, and keeps its own simpler local variants.
+
+def _ordered_claim_ids(
+    state: MASState,
+    agent_ids: List[str],
+    new_claims: Optional[Dict] = None,
+) -> List[str]:
+    """Return claim IDs in exactly the same order as agent_ids. Skips missing."""
+    ptr_map = dict(state.get("metadata", {}).get("latest_claim_by_agent") or {})
+    if new_claims:
+        for cid, cdata in new_claims.items():
+            if isinstance(cdata, dict) and cdata.get("agent_id"):
+                ptr_map[cdata["agent_id"]] = cdata.get("claim_id", cid)
+    combined = dict(state["claims"])
+    if new_claims:
+        combined.update(new_claims)
+    result = []
+    for aid in agent_ids:
+        cid = ptr_map.get(aid)
+        if not cid:
+            for k, v in reversed(list(combined.items())):
+                if isinstance(v, dict) and v.get("agent_id") == aid:
+                    cid = v.get("claim_id", k)
+                    break
+        if cid:
+            result.append(cid)
+    return result
+
+
+def _root_claim_from_parents(
+    state: MASState,
+    parent_claim_ids: List[str],
+    fallback: str,
+    new_claims: Optional[Dict] = None,
+) -> str:
+    if not parent_claim_ids:
+        return fallback
+    combined = dict(state["claims"])
+    if new_claims:
+        combined.update(new_claims)
+    cdata = combined.get(parent_claim_ids[0])
+    if isinstance(cdata, dict) and cdata.get("root_claim_id"):
+        return cdata["root_claim_id"]
+    return parent_claim_ids[0]
+
+
+def _update_meta(
+    state: MASState,
+    claim_updates: Optional[Dict[str, str]] = None,
+    incoming_subtask: Optional[Dict[str, str]] = None,
+    hub_root_claim_id: Optional[str] = None,
+    bridge_summary_updates: Optional[Dict[int, str]] = None,
+    extra: Optional[Dict] = None,
+) -> Dict:
+    meta = dict(state.get("metadata") or {})
+    if claim_updates:
+        lcba = dict(meta.get("latest_claim_by_agent") or {})
+        lcba.update(claim_updates)
+        meta["latest_claim_by_agent"] = lcba
+    if incoming_subtask:
+        inc = dict(meta.get("incoming_subtask") or {})
+        inc.update(incoming_subtask)
+        meta["incoming_subtask"] = inc
+    if hub_root_claim_id:
+        meta["hub_root_claim_id"] = hub_root_claim_id
+    if bridge_summary_updates:
+        bsc = dict(meta.get("bridge_summary_claim_by_community") or {})
+        bsc.update({str(k): v for k, v in bridge_summary_updates.items()})
+        meta["bridge_summary_claim_by_community"] = bsc
+    if extra:
+        meta.update(extra)
+    return meta
+
+
 def token_count_estimate(text: str) -> int:
     return max(1, len(text) // 4)
 

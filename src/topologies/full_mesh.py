@@ -62,70 +62,12 @@ from langgraph.graph import StateGraph, END
 from .base import (
     BaseTopology, MASState,
     make_agent_id, new_id, text_hash,
+    _ordered_claim_ids, _root_claim_from_parents, _update_meta,
 )
 from context_builder import build_context, AgentContextSpec
 from loggers.schemas import EventType, TopologyName
 
 MAX_ROUNDS = 3
-
-
-# ─────────────────────────────────────────────────────────────────
-# State helpers — same pattern as tree/hybrid/star
-# ─────────────────────────────────────────────────────────────────
-
-def _ordered_claim_ids(
-    state: MASState,
-    agent_ids: List[str],
-    new_claims: Optional[Dict] = None,
-) -> List[str]:
-    """Return claim IDs in exactly the same order as agent_ids. Skips missing."""
-    ptr_map = dict(state.get("metadata", {}).get("latest_claim_by_agent") or {})
-    if new_claims:
-        for cid, cdata in new_claims.items():
-            if isinstance(cdata, dict) and cdata.get("agent_id"):
-                ptr_map[cdata["agent_id"]] = cdata.get("claim_id", cid)
-    result = []
-    for aid in agent_ids:
-        cid = ptr_map.get(aid)
-        if not cid:
-            combined = dict(state["claims"])
-            if new_claims:
-                combined.update(new_claims)
-            for k, v in reversed(list(combined.items())):
-                if isinstance(v, dict) and v.get("agent_id") == aid:
-                    cid = v.get("claim_id", k)
-                    break
-        if cid:
-            result.append(cid)
-    return result
-
-
-def _root_claim_from_parents(
-    state: MASState,
-    parent_claim_ids: List[str],
-    fallback: str,
-    new_claims: Optional[Dict] = None,
-) -> str:
-    if not parent_claim_ids:
-        return fallback
-    combined = dict(state["claims"])
-    if new_claims:
-        combined.update(new_claims)
-    cdata = combined.get(parent_claim_ids[0])
-    if isinstance(cdata, dict) and cdata.get("root_claim_id"):
-        return cdata["root_claim_id"]
-    return parent_claim_ids[0]
-
-
-def _update_meta(
-    state: MASState,
-    claim_updates: Dict[str, str],
-) -> Dict:
-    meta = dict(state.get("metadata") or {})
-    lcba = dict(meta.get("latest_claim_by_agent") or {})
-    lcba.update(claim_updates)
-    meta["latest_claim_by_agent"] = lcba
-    return meta
 
 
 # ─────────────────────────────────────────────────────────────────
