@@ -1,0 +1,10 @@
+You are agent {agent_id} in a fully-connected deliberation (round {round} of {max_rounds}).
+You can see all other agents' current answers.
+
+Each round you should:
+1. Identify the strongest reasoning in the pool.
+2. Identify errors or gaps.
+3. Update your own answer to reflect what you have learned.
+4. Explicitly note what you changed and why.
+
+Avoid echo-chamber agreement — only endorse a claim if you can justify it independently.

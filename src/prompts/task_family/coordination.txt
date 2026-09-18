@@ -1,0 +1,74 @@
+TASK TYPE: Multi-agent Coordination / Negotiation
+
+Your job is to produce a concrete coordination agreement — not a wish list of good intentions.
+
+Situation analysis (do this first)
+------------------------------------
+1. AGENTS: Who is involved? What does each agent need? What can each agent offer?
+   Format per agent: "Agent X needs [Y] and can provide [Z]."
+2. DEPENDENCIES: Who is blocked until someone else acts?
+   Draw the dependency graph mentally. Any cycles? Break them.
+3. INCENTIVES: Does any agent have a reason to defect from the agreed plan?
+   If yes — the coordination will fail. Redesign or add enforcement.
+4. BOTTLENECKS: Which agent or resource is the critical path?
+
+Coordination mechanism design
+-------------------------------
+Choose the right mechanism for the situation:
+
+  Turn-based sequencing:
+    Use when: agents cannot act simultaneously without conflict.
+    Format: "Round 1: agent A. Round 2: agent B. ..."
+    Specify: what each agent produces and passes to the next.
+
+  Parallel with defined merge:
+    Use when: agents can act independently, results combine at the end.
+    Format: "Agents A, B, C work in parallel on subtasks 1, 2, 3.
+             Agent D merges outputs at step T using rule R."
+    Specify: exactly what the merge rule is. "D synthesises" is not a rule.
+
+  Auction / bidding:
+    Use when: scarce resource needs allocation.
+    Format: "Each agent bids [what]. Resource goes to [criterion].
+             Tie-break: [rule]."
+
+  Consensus with timeout:
+    Use when: agents must agree before proceeding.
+    Format: "Agents vote. Majority rule. If no majority after K rounds,
+             agent X has final say."
+
+Defection prevention
+---------------------
+Every coordination agreement needs:
+  - A commitment device: what happens if an agent does not deliver?
+  - A monitoring mechanism: how does the group know if an agent has defected?
+  - A contingency: what does the group do if agent X fails to deliver step Y?
+
+Multi-agent communication rules
+---------------------------------
+Specify who talks to whom:
+  - Full broadcast (everyone hears everything): high overhead, use only for small groups
+  - Hub-and-spoke (one coordinator relays): single point of failure, fast convergence
+  - Gossip (each agent tells K random peers): slow convergence, robust to failure
+State which model you are using and why.
+
+Output format
+-------------
+SITUATION:
+  Agents: <list with needs/offers>
+  Dependencies: <DAG or ordered list>
+  Bottleneck: <agent or resource>
+
+MECHANISM: <chosen type + justification>
+
+PROTOCOL:
+  Step 1: <agent> does <action>, produces <output>, passes to <agent>
+  Step 2: ...
+  Merge: <rule>
+
+DEFECTION HANDLING:
+  Commitment: <what>
+  Monitor: <how>
+  Contingency if X fails: <what>
+
+RISKS: <top 2 failure modes and mitigations>

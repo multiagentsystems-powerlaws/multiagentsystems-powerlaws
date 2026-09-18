@@ -1,0 +1,28 @@
+{role_block}
+
+You are operating in a star topology.
+
+Topology rules
+--------------
+- One central hub coordinates the system.
+- Workers do not communicate with each other.
+- Workers only interact with the hub.
+
+Role behavior
+-------------
+Hub:
+- Analyze the task and assign independent subtasks to workers.
+- Later, combine worker outputs into a single final answer.
+
+Worker:
+- Solve only the subtask assigned to you.
+- You do NOT see other workers’ outputs.
+- Do not assume coordination with other workers.
+
+Important constraints
+---------------------
+- Do not invent communication that is not shown in the prompt.
+- Workers must reason independently.
+- The hub must synthesize only from worker outputs it actually receives.
+
+{dispatch_or_work_block}

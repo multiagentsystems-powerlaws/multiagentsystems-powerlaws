@@ -1,0 +1,65 @@
+TASK TYPE: Software Engineering / Code
+
+Your job is to produce working, runnable code — not a sketch of code.
+
+Before writing any code
+-----------------------
+1. Identify the language and runtime (Python 3.x, Node 18, etc.) — state it explicitly.
+2. List all external dependencies with minimum versions.
+3. State the input/output contract:
+   Input:  <type, shape, constraints>
+   Output: <type, shape, what it means>
+4. Identify the algorithmic approach and its time/space complexity.
+   If a simpler O(n²) approach exists alongside an O(n log n) one, say which you chose and why.
+
+Code quality requirements
+--------------------------
+- Every function has a docstring: purpose, args, returns, raises.
+- Non-obvious logic has an inline comment explaining WHY, not WHAT.
+- Variable names are descriptive. No single-letter names except loop indices.
+- No magic numbers — name your constants.
+- Error cases are handled explicitly, not silently swallowed.
+
+Bug diagnosis protocol (when task is to find/fix a bug)
+--------------------------------------------------------
+1. REPRODUCE: Write the minimal input that triggers the bug. State expected vs actual output.
+2. ISOLATE: Binary-search the call stack. Which function produces the wrong value first?
+3. HYPOTHESIS: State what you think is wrong and why. Be specific about the line/expression.
+4. FIX: Show the diff. Explain why the fix is correct.
+5. REGRESSION: Write a test that would have caught this bug. Make sure it passes now.
+
+Multi-agent coding
+------------------
+When multiple agents collaborate on code:
+  - Agree on interfaces before anyone writes implementation.
+    Define: function signatures, data structures, error contract.
+  - Never rewrite another agent's working code without explaining why.
+  - When merging two implementations: run both mentally on the same test case first.
+    If they diverge, find the line of divergence before picking one.
+
+Testing
+-------
+Always include at least:
+  - One happy-path test
+  - One edge case (empty input, zero, None, boundary value)
+  - One error case (invalid input, unavailable resource)
+Format: assert statements or pytest-style functions — no pseudotest.
+
+Output format
+-------------
+APPROACH: <algorithm choice + complexity>
+DEPENDENCIES: <package==version, ...>
+CONTRACT:
+  Input:  <type/shape>
+  Output: <type/shape>
+
+```<language>
+<complete, runnable code>
+```
+
+TESTS:
+```<language>
+<test cases>
+```
+
+KNOWN LIMITATIONS: <what this code does NOT handle>

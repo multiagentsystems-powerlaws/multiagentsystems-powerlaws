@@ -1,0 +1,377 @@
+================================================================================
+MAS POWER-LAWS SWEEP — TINKERCLIFFS2 COMMAND REFERENCE
+COLM 2026 Submission
+================================================================================
+
+CLUSTER: Tinkercliffs2 (Virginia Tech ARC)
+REPO:     /home/kavanav/mas-powerlaws/
+RESULTS:  /scratch/kavanav/mas-results/
+VENV:     /home/kavanav/mas-powerlaws/venv/
+
+================================================================================
+0. SETUP (run once on login node)
+================================================================================
+
+cd /home/kavanav/mas-powerlaws
+source venv/bin/activate
+pip install -r requirements.txt --break-system-packages
+
+# Verify environment
+python -c "import langchain_openai, powerlaw, networkx; print('OK')"
+
+# Set API key (add to ~/.bashrc for persistence)
+export OPENAI_API_KEY="sk-..."
+
+# Create scratch output directories
+mkdir -p /scratch/kavanav/mas-results/{MARBLE,GAIA,REALM,SWE-bench}
+mkdir -p /scratch/kavanav/mas-results/combined
+
+================================================================================
+1. SMOKE TEST — run first to verify pipeline (all topologies/benchmarks)
+================================================================================
+
+# Run on login node or interactive node (small, ~5-10 min)
+cd /home/kavanav/mas-powerlaws
+source venv/bin/activate
+
+python main.py --mode smoke \
+    --data-root data/smoke \
+    --model gpt-4o-mini
+
+# Expected output:
+#   ✓  sweep       ~120s
+#   ✓  extract     ~10s
+#   ✓  analyse     ~5s
+#   ✓  tables      ~5s
+#   ✓  figures     ~30s
+# If any stage fails, fix before launching full sweep.
+
+# To re-run only failed stages after fixing:
+python main.py --mode smoke \
+    --data-root data/smoke \
+    --stages extract analyse tables figures
+
+================================================================================
+2. FULL SWEEP — one GPU per benchmark (run simultaneously)
+================================================================================
+
+# Recommended: 4 separate GPU allocations, one per benchmark.
+# Each runs ~1050 runs (7 topos × 5 scales × 3 seeds × 10 tasks)
+
+# ── GPU 0: MARBLE ──────────────────────────────────────────────
+python main.py --mode full \
+    --benchmark MARBLE \
+    --data-root /scratch/kavanav/mas-results/MARBLE \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+
+# ── GPU 1: GAIA ─────────────────────────────────────────────────
+python main.py --mode full \
+    --benchmark GAIA \
+    --data-root /scratch/kavanav/mas-results/GAIA \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+
+# ── GPU 2: REALM ─────────────────────────────────────────────────
+python main.py --mode full \
+    --benchmark REALM \
+    --data-root /scratch/kavanav/mas-results/REALM \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+
+# ── GPU 3: SWE-bench ─────────────────────────────────────────────
+python main.py --mode full \
+    --benchmark SWE-bench \
+    --data-root /scratch/kavanav/mas-results/SWE-bench \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+
+================================================================================
+3. SLURM JOB SCRIPTS (submit with sbatch)
+================================================================================
+
+# Save each block as marble.slurm, gaia.slurm, etc.
+
+# ── marble.slurm ───────────────────────────────────────────────
+cat > /home/kavanav/mas-powerlaws/slurm/marble.slurm << 'EOF'
+#!/bin/bash
+#SBATCH --job-name=mas-marble
+#SBATCH --output=/home/kavanav/mas-powerlaws/logs/marble_%j.out
+#SBATCH --error=/home/kavanav/mas-powerlaws/logs/marble_%j.err
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --partition=normal_q
+
+cd /home/kavanav/mas-powerlaws
+source venv/bin/activate
+export OPENAI_API_KEY="$OPENAI_API_KEY"
+
+python main.py --mode full \
+    --benchmark MARBLE \
+    --data-root /scratch/kavanav/mas-results/MARBLE \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+EOF
+
+# ── gaia.slurm ─────────────────────────────────────────────────
+cat > /home/kavanav/mas-powerlaws/slurm/gaia.slurm << 'EOF'
+#!/bin/bash
+#SBATCH --job-name=mas-gaia
+#SBATCH --output=/home/kavanav/mas-powerlaws/logs/gaia_%j.out
+#SBATCH --error=/home/kavanav/mas-powerlaws/logs/gaia_%j.err
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --partition=normal_q
+
+cd /home/kavanav/mas-powerlaws
+source venv/bin/activate
+export OPENAI_API_KEY="$OPENAI_API_KEY"
+
+python main.py --mode full \
+    --benchmark GAIA \
+    --data-root /scratch/kavanav/mas-results/GAIA \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+EOF
+
+# ── realm.slurm ────────────────────────────────────────────────
+cat > /home/kavanav/mas-powerlaws/slurm/realm.slurm << 'EOF'
+#!/bin/bash
+#SBATCH --job-name=mas-realm
+#SBATCH --output=/home/kavanav/mas-powerlaws/logs/realm_%j.out
+#SBATCH --error=/home/kavanav/mas-powerlaws/logs/realm_%j.err
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --partition=normal_q
+
+cd /home/kavanav/mas-powerlaws
+source venv/bin/activate
+export OPENAI_API_KEY="$OPENAI_API_KEY"
+
+python main.py --mode full \
+    --benchmark REALM \
+    --data-root /scratch/kavanav/mas-results/REALM \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+EOF
+
+# ── swebench.slurm ─────────────────────────────────────────────
+cat > /home/kavanav/mas-powerlaws/slurm/swebench.slurm << 'EOF'
+#!/bin/bash
+#SBATCH --job-name=mas-swe
+#SBATCH --output=/home/kavanav/mas-powerlaws/logs/swe_%j.out
+#SBATCH --error=/home/kavanav/mas-powerlaws/logs/swe_%j.err
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --partition=normal_q
+
+cd /home/kavanav/mas-powerlaws
+source venv/bin/activate
+export OPENAI_API_KEY="$OPENAI_API_KEY"
+
+python main.py --mode full \
+    --benchmark SWE-bench \
+    --data-root /scratch/kavanav/mas-results/SWE-bench \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --model gpt-4o-mini \
+    --stages sweep
+EOF
+
+# Create logs dir
+mkdir -p /home/kavanav/mas-powerlaws/logs
+mkdir -p /home/kavanav/mas-powerlaws/slurm
+
+# Submit all 4 jobs simultaneously
+sbatch /home/kavanav/mas-powerlaws/slurm/marble.slurm
+sbatch /home/kavanav/mas-powerlaws/slurm/gaia.slurm
+sbatch /home/kavanav/mas-powerlaws/slurm/realm.slurm
+sbatch /home/kavanav/mas-powerlaws/slurm/swebench.slurm
+
+# Monitor jobs
+squeue -u kavanav
+watch -n 30 squeue -u kavanav
+
+================================================================================
+4. POST-SWEEP SWE-BENCH DOCKER EVAL (run after GPU 3 finishes)
+================================================================================
+
+# Requires Docker. Run on a node with Docker access.
+python scripts/run_swe_eval.py \
+    --data-root /scratch/kavanav/mas-results/SWE-bench \
+    --run-id sweep_001 \
+    --max-workers 4
+
+================================================================================
+5. COMBINED ANALYSIS (run after ALL 4 GPUs finish)
+================================================================================
+
+python main.py --mode analyse \
+    --data-roots \
+        /scratch/kavanav/mas-results/MARBLE \
+        /scratch/kavanav/mas-results/GAIA \
+        /scratch/kavanav/mas-results/REALM \
+        /scratch/kavanav/mas-results/SWE-bench \
+    --out /scratch/kavanav/mas-results/combined
+
+# This runs: extract → analyse → tables → figures
+# Output structure:
+#   combined/
+#     extracted/
+#       observables_pooled.json     ← raw H1 observables
+#       observables_by_group.json   ← per (topology, benchmark, N)
+#       run_metrics.csv             ← H2 per-run metrics
+#       topology_summary.csv        ← H2 aggregated per topology
+#       scaling_table.csv           ← H3 xmax vs N
+#     analysis/
+#       fit_results.json            ← power-law fits
+#       fit_results.csv             ← Table 1 data
+#     tables/
+#       table1_pl_fits.tex/.csv     ← Power-law statistics
+#       table2_topology_h2.tex/.csv ← H2 quality metrics
+#       table3_tail_interpretation.tex
+#       table4_experiment_design.tex
+#     figures/
+#       fig2_ccdf_panel.pdf/.png
+#       fig3_universality_collapse.pdf/.png
+#       fig4_lr_heatmap.pdf/.png
+#       fig5_xmax_scaling.pdf/.png
+#       ... (21 total figures)
+
+================================================================================
+6. RESUME PARTIAL SWEEP (if jobs fail/timeout)
+================================================================================
+
+# Add --resume to skip runs where run_metadata.json already exists
+python main.py --mode full \
+    --benchmark MARBLE \
+    --data-root /scratch/kavanav/mas-results/MARBLE \
+    --scales 8 16 32 64 128 \
+    --seeds 0 1 2 \
+    --max-tasks 10 \
+    --max-concurrent 4 \
+    --stages sweep \
+    --resume
+
+================================================================================
+7. PROGRESS MONITORING
+================================================================================
+
+# Count completed runs per benchmark
+for bench in MARBLE GAIA REALM SWE-bench; do
+    n=$(find /scratch/kavanav/mas-results/$bench -name "run_metadata.json" | wc -l)
+    echo "$bench: $n runs complete"
+done
+
+# Count events files
+find /scratch/kavanav/mas-results -name "events.jsonl" | wc -l
+
+# Tail latest log
+ls -t /home/kavanav/mas-powerlaws/logs/*.out | head -1 | xargs tail -f
+
+# Check for errors in any log
+grep -l "ERROR\|Traceback" /home/kavanav/mas-powerlaws/logs/*.out
+
+# Check disk usage
+du -sh /scratch/kavanav/mas-results/*
+
+================================================================================
+8. QUICK CHECKS MID-SWEEP
+================================================================================
+
+# Verify events.jsonl folder structure
+find /scratch/kavanav/mas-results/MARBLE -name "events.jsonl" | head -3
+# Expected: .../MARBLE/chain/n8/s0/task_id/events.jsonl
+
+# Spot-check event fields
+python3 -c "
+import json
+from pathlib import Path
+ep = next(Path('/scratch/kavanav/mas-results/MARBLE').rglob('events.jsonl'))
+ev = json.loads(open(ep).readline())
+print('Fields:', list(ev.keys()))
+print('topology:', ev.get('topology'))
+print('event_type:', ev.get('event_type'))
+print('parent_claim_ids:', ev.get('parent_claim_ids'))
+"
+
+# Spot-check H2 metadata
+python3 -c "
+import json
+from pathlib import Path
+mp = next(Path('/scratch/kavanav/mas-results/MARBLE').rglob('run_metadata.json'))
+m = json.loads(open(mp).read())
+for k in ['task_score','completion_ratio','coherence_score','integration_score',
+          'tokens_total','num_merges_total']:
+    print(f'{k}: {m.get(k)}')
+extra = m.get('extra', {})
+for k in ['claim_participation_rate','resolution_rate','architecture']:
+    print(f'extra.{k}: {extra.get(k)}')
+"
+
+================================================================================
+9. EXPECTED RUN COUNTS
+================================================================================
+
+Full sweep breakdown:
+  7 topologies × 5 scales × 3 seeds × 10 tasks = 1050 runs per benchmark
+  × 4 benchmarks = 4200 total runs
+
+Per-topology (all benchmarks combined):
+  chain:              600 runs
+  star:               600 runs
+  tree:               600 runs
+  full_mesh:          600 runs
+  sparse_mesh:        600 runs
+  hybrid_modular:     600 runs
+  dynamic_reputation: 600 runs
+
+Estimated tokens: ~21M tokens at ~5k/run
+Estimated cost:   ~$3.15 at $0.15/1M (gpt-4o-mini)
+Estimated time:   ~8-12 hours per GPU (with max-concurrent=4)
+
+================================================================================
+END
+================================================================================

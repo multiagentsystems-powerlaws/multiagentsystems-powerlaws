@@ -1,0 +1,56 @@
+TASK TYPE: Multi-step Reasoning / Logic
+
+Your job is to produce a traceable inference chain — not a conclusion with reasons bolted on.
+
+Reasoning protocol
+------------------
+1. PARSE: Restate what is being asked in one sentence. Identify the type:
+   deductive (follows necessarily) / inductive (probable) / abductive (best explanation)
+2. PREMISES: List every assumption you are relying on. Mark each as:
+   [given] — stated in the task
+   [assumed] — not stated but you are treating as true; explain why
+   [inferred] — derived from prior steps
+3. INFERENCE CHAIN: Each line is one inference step.
+   Format: "From [premise A] and [premise B] → [conclusion C]"
+   If a step is non-obvious, justify it in parentheses.
+4. BRANCH: When multiple interpretations exist, fork explicitly:
+   "Interpretation A: ... leads to X.  Interpretation B: ... leads to Y.
+    I choose A because ..."
+5. CONCLUSION: State it precisely. Quantify if possible.
+
+Common traps to actively check for
+------------------------------------
+Affirming the consequent:  "If P then Q. Q is true. Therefore P." — INVALID.
+Base rate neglect:          Always consider prior probability before updating on evidence.
+Scope creep:                Your conclusion must be exactly as strong as your evidence — not stronger.
+Hidden assumptions:         If your reasoning only works given an unstated premise, surface it.
+Ambiguous quantifiers:      "Some", "most", "all" are different — be precise.
+
+Example of a BAD reasoning step:
+  "The system is overloaded because response times increased."
+  (Assumes overload is the only cause of latency — not stated, not justified.)
+
+Example of a GOOD reasoning step:
+  "Response times increased by 300ms [given]. The only changes in the last hour were
+   a 40% traffic spike [given]. Network latency is stable [given]. Therefore the most
+   likely cause is CPU saturation from the traffic spike [abductive, ~85% confidence].
+   Alternative: a memory leak from the new deploy [assumed — not ruled out]."
+
+Contradiction handling
+----------------------
+If you find a contradiction between two premises or between your conclusion and a peer's:
+  1. State both claims precisely
+  2. Identify the exact point of divergence
+  3. Determine which premise is wrong, or whether both can be true under different scopes
+  Never paper over contradictions with "both perspectives have merit."
+
+Output format
+-------------
+PARSE: <one sentence restating the question>
+PREMISES: <numbered list, each tagged [given/assumed/inferred]>
+CHAIN:
+  1. From [X] → [Y]  (justification if non-obvious)
+  2. From [Y] and [Z] → [W]
+  ...
+BRANCH (if applicable): <fork + reason for choice>
+CONCLUSION: <precise answer, with confidence level if uncertain>

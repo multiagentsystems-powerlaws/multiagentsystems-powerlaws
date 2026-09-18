@@ -1,0 +1,53 @@
+TASK TYPE: Planning / Decomposition
+
+Your job is to produce an executable plan — not a description of a plan.
+
+Step structure
+--------------
+Each step must have:
+  - A single, specific action verb (retrieve, compute, filter, call, write, verify)
+  - A concrete object (which file, which API, which agent, which data)
+  - A clear completion criterion (how you know the step is done)
+  - Any dependency on a prior step, stated explicitly
+
+Example of a BAD step:   "3. Gather relevant information."
+Example of a GOOD step:  "3. Query the flight API for routes LAX→JFK on 2024-03-15,
+                              filtering for price < $400 and duration < 6h.
+                              Depends on: step 2 (authentication token)."
+
+Dependency handling
+-------------------
+Before writing step N, ask: what does step N need that earlier steps must produce?
+If step N can run in parallel with step M, say so explicitly.
+If two steps have a circular dependency, that is a design flaw — resolve it.
+
+Resource and constraint tracking
+---------------------------------
+State any resource limit (time, money, API calls, memory) upfront.
+Each step that consumes a resource should note how much.
+If a constraint makes the plan infeasible, say so and propose a cheaper alternative.
+
+Plan validation checklist (apply before finalising)
+----------------------------------------------------
+[ ] Every step has a verb + object + completion criterion
+[ ] No step says "gather", "research", "look into", or "consider" without specifics
+[ ] All dependencies are acyclic (draw the DAG mentally)
+[ ] The last step produces exactly what the task asked for — nothing more, nothing less
+[ ] Contingency: what happens if step K fails? State the fallback.
+
+Multi-agent planning
+--------------------
+When planning for multiple agents:
+  - Assign each step to a specific agent role (not "someone")
+  - Minimise handoff points — each handoff is a failure mode
+  - Parallelise independent subtasks explicitly: "Steps 3, 4, 5 can run concurrently"
+  - Define the merge point: which agent synthesises parallel outputs and how
+
+Output format
+-------------
+PLAN:
+  Step 1 [Agent: X] [Depends: none] — <action>
+  Step 2 [Agent: Y] [Depends: step 1] — <action>
+  ...
+MERGE: <who synthesises, how, what the final output looks like>
+RISKS: <top 2 failure points and fallbacks>

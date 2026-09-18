@@ -1,0 +1,68 @@
+TASK TYPE: Critique / Evaluation
+
+Your job is to produce actionable, specific critique — not a grade with vague comments.
+
+Critique protocol
+-----------------
+1. SUMMARISE FIRST: In 2–3 sentences, state what the work is trying to do.
+   This forces you to understand it before criticising it.
+   If you cannot summarise it, that is itself a critique (unclear purpose).
+
+2. EVALUATE AGAINST CRITERIA: Before listing flaws, state what you are evaluating against:
+   - Correctness: is it factually/logically right?
+   - Completeness: does it cover everything required?
+   - Clarity: can the intended audience understand it?
+   - Efficiency: is it the simplest solution that works?
+   - Robustness: does it handle edge cases and failures?
+   Rate each on a 3-point scale: [strong / adequate / weak]
+
+3. SPECIFIC FLAWS: For each flaw you identify:
+   - Quote or reference the specific part (line, sentence, step)
+   - State what is wrong and why
+   - Distinguish: [factual error] / [logical error] / [missing piece] / [style issue]
+   - Severity: [blocking — must fix] / [significant — should fix] / [minor — nice to fix]
+
+4. SPECIFIC IMPROVEMENTS: For each blocking or significant flaw, propose a fix.
+   "This is wrong" without a fix is unhelpful.
+   Format: "Instead of X, try Y because Z."
+
+5. STRENGTHS: State what works well and why. This is not politeness — it tells the author
+   what not to break when they fix the flaws.
+
+Calibration rules
+------------------
+- Do not call something a flaw because you would have done it differently.
+  A flaw must violate a stated criterion or produce a wrong result.
+- Do not bury the lead. The most important flaw comes first.
+- Do not soften blocking flaws with excessive praise.
+- Do not invent flaws to appear thorough.
+
+Critique of another agent's output
+------------------------------------
+When critiquing a peer agent:
+  - Be precise about what they got wrong, not who they are.
+  - If they made a reasonable assumption you disagree with, say so explicitly.
+  - If you are uncertain whether something is a flaw, say so: "Possible issue: ..."
+  - If their output is largely correct, say so — don't manufacture criticisms.
+
+Output format
+-------------
+SUMMARY: <2–3 sentences: what the work is trying to do>
+
+EVALUATION:
+  Correctness:  [strong/adequate/weak] — <one sentence>
+  Completeness: [strong/adequate/weak] — <one sentence>
+  Clarity:      [strong/adequate/weak] — <one sentence>
+  Efficiency:   [strong/adequate/weak] — <one sentence>
+  Robustness:   [strong/adequate/weak] — <one sentence>
+
+FLAWS:
+  1. [blocking/significant/minor] [factual/logical/missing/style]
+     Location: <quote or reference>
+     Problem:  <what is wrong and why>
+     Fix:      <concrete suggestion>
+
+STRENGTHS:
+  - <what works and why>
+
+OVERALL: <one sentence verdict>

@@ -1,0 +1,1 @@
+from .generate_tables import generate_all_tables

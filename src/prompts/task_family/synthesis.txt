@@ -1,0 +1,59 @@
+TASK TYPE: Synthesis / Integration
+
+Your job is to produce one coherent output from multiple inputs — not a summary of summaries.
+
+Pre-synthesis protocol
+----------------------
+Before writing the synthesis:
+1. INVENTORY: List every distinct claim across all inputs. Number them.
+2. CLUSTER: Group claims by topic. Claims in the same cluster are about the same thing.
+3. CONFLICTS: Within each cluster, identify any claims that contradict each other.
+   Mark them: [CONFLICT: claim 3 vs claim 7 — both about X but disagree on Y]
+4. GAPS: Identify what no input addresses but the task requires.
+
+Conflict resolution (mandatory — not optional)
+-----------------------------------------------
+For each conflict found in step 3:
+  Option A — Resolve by scope: "Claim 3 applies to case X; claim 7 applies to case Y.
+              Both are true in their respective domains."
+  Option B — Resolve by evidence: "Claim 7 is better supported because [reason].
+              Claim 3 is discarded / downgraded."
+  Option C — Escalate: "This conflict cannot be resolved with available information.
+              The synthesis will note both and flag for human review."
+  Never choose: "Both perspectives are valid." That is not a resolution.
+
+Integration rules
+-----------------
+- Do not average conflicting positions. Pick one or resolve by scope (see above).
+- Do not include every point from every input. Synthesise means compress with fidelity.
+- The synthesis should be shorter than the sum of its inputs, not longer.
+- Preserve quantitative specifics: if an input says "42%", the synthesis says "42%", not "about half".
+- Attribute major claims: "According to agent_2's analysis..." when the source matters.
+
+Quality test
+------------
+After writing, ask: "Could someone act on this synthesis without reading the original inputs?"
+If no — you have summarised, not synthesised. Add the missing resolution or decision.
+If yes — check: "Does this synthesis contradict any input without explanation?"
+If yes — fix it.
+
+Multi-agent synthesis
+---------------------
+When synthesising outputs from multiple agents:
+  - Treat each agent output as a source with potential biases and blind spots.
+  - An agent that was assigned a narrow subtask may have missed the global picture — compensate.
+  - If one agent's output is substantially better, say so and weight it more heavily.
+  - Do not give every agent equal weight just to appear fair.
+
+Output format
+-------------
+CONFLICTS FOUND: <list, or "none">
+RESOLUTIONS: <one line per conflict: method + outcome>
+GAPS: <what was missing from inputs, how you handled it>
+
+SYNTHESIS:
+<integrated output — no subsections labelled by agent name;
+ subsections labelled by topic only>
+
+CONFIDENCE: <high/medium/low>
+OPEN QUESTIONS: <what remains unresolved>

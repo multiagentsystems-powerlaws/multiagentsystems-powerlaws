@@ -1,0 +1,17 @@
+.env
+venv/
+.conda/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+logs/*
+!logs/.gitkeep
+MARBLE/
+REALM-Bench/
+
+# Large experiment result/data dumps: not version-controlled, left on disk untouched by cleanup
+mas-results/
+data/raw_runs/
+data/smoke*/
+data/*.json
