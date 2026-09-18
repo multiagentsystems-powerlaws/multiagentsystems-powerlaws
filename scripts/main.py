@@ -36,8 +36,8 @@ Options:
   --data-root     Per-benchmark sweep output root
   --data-roots    Multiple roots for post-sweep analysis
   --out           Combined analysis output dir
-  --scales        Agent counts (default: 8 16 32 64 128)
-  --seeds         Seeds (default: 0 1 2)
+  --scales        Agent counts (default: 8 16 32 64 128 256 512)
+  --seeds         Seeds (default: 0 1 2 3 4)
   --max-tasks     Tasks per benchmark (default: 10)
   --max-concurrent Parallel runs (default: 4)
   --model         LLM model name (default: gpt-4o-mini)
