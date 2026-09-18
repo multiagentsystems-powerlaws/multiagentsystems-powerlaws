@@ -1,13 +1,14 @@
 """
 src/benchmark_wrappers/task_expander.py
 
-Benchmark-conditioned workload expansion module (paper Section H).
+Benchmark-conditioned workload expansion module (paper Appendix B.1).
 
 Paper spec:
-    K = min(5, |B(b,d)|)      seed tasks sampled from benchmark b, domain d
-    A = 5                      target agents per task
-    M = ceil(N / (K * A))     expanded tasks generated per seed
-    Execution pool = K * M     expanded nodes only — seeds are evaluation anchors
+    K = min(5, |B(b,d)|)        seed tasks sampled from benchmark b, domain d
+    T(N) = ceil(N^0.65)         size-dependent workload-expansion target
+    M = ceil(T(N) / K)          expanded tasks generated per seed
+    Execution pool = K * M ≈ T(N)   expanded nodes only — seeds are evaluation anchors
+    rho(N) = N / T(N)           agents-per-subtask ratio (Appendix B.1, Eq. rho(N))
 
 Design contracts (fixes vs previous versions):
 ───────────────────────────────────────────────
@@ -59,8 +60,8 @@ from typing import Dict, List, Literal, Optional
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-K_MAX    = 5   # K = min(5, |B(b,d)|)   paper Section H
-A_TARGET = 5   # target agents per task  paper Section H
+K_MAX          = 5     # K = min(5, |B(b,d)|)   paper Appendix B.1
+WORKLOAD_EXPONENT = 0.65  # T(N) = ceil(N^WORKLOAD_EXPONENT)   paper Appendix B.1
 
 
 # ── Types ─────────────────────────────────────────────────────────────────────
@@ -76,11 +77,16 @@ def num_seed_tasks(pool_size: int) -> int:
     return min(K_MAX, pool_size)
 
 
+def workload_size(N: int) -> int:
+    """T(N) = ceil(N^0.65) — paper Appendix B.1 size-dependent workload rule."""
+    return math.ceil(N ** WORKLOAD_EXPONENT)
+
+
 def num_expanded_per_seed(N: int, K: int) -> int:
-    """M = ceil(N / (K * A)).  Requires K >= 1."""
+    """M = ceil(T(N) / K).  Requires K >= 1."""
     if K <= 0:
         raise ValueError(f"K must be >= 1, got {K}")
-    return max(1, math.ceil(N / (K * A_TARGET)))
+    return max(1, math.ceil(workload_size(N) / K))
 
 
 def total_pool_size(N: int, K: int) -> int:
@@ -251,7 +257,8 @@ class TaskTree:
             f"  Expanded per seed (M)      : {self.M}",
             f"  Execution pool (K*M)       : {self.pool_size}",
             f"  Total nodes incl. root     : {self.total_nodes}",
-            f"  Agents per task (target A) : {m['agents_per_task']:.2f}  (paper target: ~5)",
+            f"  Agents per task (rho(N))   : {m['agents_per_task']:.2f}  "
+            f"(target: {self.N}/{workload_size(self.N)}={self.N/workload_size(self.N):.2f})",
             f"  Allocated agent fraction   : {m['allocated_agent_fraction']:.1%}",
             f"  Root depends on            : {len(self.root_node.depends_on)} expanded nodes",
             f"  Avg deps per exec node     : {m['avg_deps_per_node']:.1f}",

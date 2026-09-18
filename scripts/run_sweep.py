@@ -142,7 +142,7 @@ def parse_args() -> argparse.Namespace:
     # Execution
     p.add_argument("--max-concurrent", type=int, default=4, dest="max_concurrent",
                    help="Concurrent runs (default 4; lower for large N)")
-    p.add_argument("--max-steps",      type=int, default=50, dest="max_steps")
+    p.add_argument("--max-steps",      type=int, default=20, dest="max_steps")
     p.add_argument("--snapshot-every", type=int, default=5,  dest="snapshot_every")
     p.add_argument("--resume",         action="store_true",
                    help="Skip runs where run_metadata.json already exists")

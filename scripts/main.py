@@ -74,8 +74,8 @@ SMOKE_TASKS    = 2          # per benchmark
 SMOKE_STEPS    = 20
 SMOKE_CONCURRENT = 2
 
-FULL_SCALES    = [8, 16, 32, 64, 128]
-FULL_SEEDS     = [0, 1, 2]
+FULL_SCALES    = [8, 16, 32, 64, 128, 256, 512]
+FULL_SEEDS     = [0, 1, 2, 3, 4]
 FULL_TASKS     = 5
 FULL_STEPS     = 20
 FULL_CONCURRENT = 4

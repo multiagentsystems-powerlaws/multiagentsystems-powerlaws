@@ -3,9 +3,9 @@ src/context_builder.py
 
 Assembles the full prompt for one agent turn.
 
-This builder does not enforce token budgets directly.
-Budgeting, truncation, or context-window limits should be applied upstream
-by the orchestrator/config layer for a given experimental condition.
+Enforces the paper's 4000-token context window (Table 7) by truncating
+PRIOR OUTPUTS — the only unbounded-size component — dropping the oldest
+entries first when full history would overflow the budget.
 
 What is NOT injected:
   - decision rules ("if prior claim -> revise_claim")
@@ -32,6 +32,13 @@ from prompts.base_prompt import BASE_PROMPT
 from loggers.trace_schema import AGENT_OUTPUT_FORMAT
 from prompts.topology_addenda import get_topology_addendum
 from prompts.task_addenda import get_task_addendum
+
+# Context budget for prompt assembly (paper Table 7: 4000-token window).
+CONTEXT_BUDGET_TOKENS = 4000
+
+
+def _estimate_tokens(text: str) -> int:
+    return max(1, len(text) // 4)
 
 
 @dataclass
@@ -127,9 +134,36 @@ def build_context(spec: AgentContextSpec) -> str:
             "PRIOR OUTPUTS",
             "Cite message_id and claim_id in your provenance when you build on these:",
         ]
-        for aid, mid, cid, text in spec.prior_outputs:
-            prior_lines.append(f"\n[{aid}]  message_id={mid}  claim_id={cid}\n{text}")
-        state_parts.append("\n".join(prior_lines))
+        entries = [
+            f"\n[{aid}]  message_id={mid}  claim_id={cid}\n{text}"
+            for aid, mid, cid, text in spec.prior_outputs
+        ]
+
+        # Fixed-cost parts (everything except prior outputs) must fit first;
+        # whatever budget remains goes to the most recent prior outputs,
+        # dropping the oldest entries when full history would overflow it.
+        fixed_cost = _estimate_tokens(
+            "\n\n".join([BASE_PROMPT, topology_addendum, task_addendum,
+                         "\n".join(state_parts), AGENT_OUTPUT_FORMAT])
+        )
+        budget_remaining = max(0, CONTEXT_BUDGET_TOKENS - fixed_cost)
+
+        used = _estimate_tokens("\n".join(prior_lines))
+        kept: List[str] = []
+        for entry in reversed(entries):
+            cost = _estimate_tokens(entry)
+            if used + cost > budget_remaining and kept:
+                break
+            kept.append(entry)
+            used += cost
+        kept.reverse()
+
+        if len(kept) < len(entries):
+            prior_lines.append(
+                f"\n[... {len(entries) - len(kept)} earlier output(s) omitted "
+                f"to fit the {CONTEXT_BUDGET_TOKENS}-token context budget ...]"
+            )
+        state_parts.append("\n".join(prior_lines + kept))
 
     parts.append("\n".join(state_parts))
     parts.append(AGENT_OUTPUT_FORMAT)
@@ -151,5 +185,6 @@ def get_visible_neighbor_cap(n: int) -> int:
     return n
 
 
-# Token budget for LLM completions. Used by _acall_llm in base.py.
-MAX_COMPLETION_TOKENS = 4096
+# Token budget for LLM completions (paper Table 7: 1000-token completion budget).
+# Used by _acall_llm in base.py.
+MAX_COMPLETION_TOKENS = 1000

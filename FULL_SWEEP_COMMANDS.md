@@ -1,21 +1,26 @@
 ================================================================================
 MAS POWER-LAWS FULL SWEEP — TINKERCLIFFS2
-COLM 2026  |  2,100 runs
+COLM 2026  |  4,900 runs
 ================================================================================
 
 SWEEP SPEC
   Topologies:  7 (chain, star, tree, full_mesh, sparse_mesh, hybrid_modular, dynamic_reputation)
+               NOTE: paper's reported results use only 6 of these (hybrid_modular
+               has no corresponding description anywhere in the paper) — decide
+               whether to include it before treating this as the paper-aligned sweep.
   Benchmarks:  4 (MARBLE, GAIA, REALM, SWE-bench)
+               NOTE: MARBLE stands in for the paper's "MultiAgentBench" — not the
+               same benchmark; the real MultiAgentBench data is unused in MARBLE/multiagentbench/.
   Tasks:       5 per benchmark
-  Seeds:       3 (0, 1, 2)
-  Scales:      5 (N=8, 16, 32, 64, 128)
-  Total runs:  2,100
-  Est. tokens: ~83M
-  Est. cost:   ~$19 (gpt-4o-mini @ $0.15/1M)
-  Est. time:   ~22h total wallclock (4 GPUs running in parallel, max_concurrent=4)
+  Seeds:       5 (0, 1, 2, 3, 4)
+  Scales:      7 (N=8, 16, 32, 64, 128, 256, 512)
+  Total runs:  4,900
+  Est. tokens: ~194M
+  Est. cost:   ~$44 (gpt-4o-mini @ $0.15/1M)
+  Est. time:   ~52h total wallclock (4 GPUs running in parallel, max_concurrent=4)
 
 STRATEGY: Run one benchmark per GPU node simultaneously.
-Each GPU runs all 7 topologies × 5 tasks × 3 seeds × 5 scales = 525 runs.
+Each GPU runs all 7 topologies × 5 tasks × 5 seeds × 7 scales = 1,225 runs.
 
 ================================================================================
 STEP 0 — ENVIRONMENT SETUP (run once on login node)
@@ -66,8 +71,8 @@ source venv/bin/activate
 python scripts/main.py --mode full \
     --benchmark MARBLE \
     --data-root /home/kavanav/mas-powerlaws/mas-results/MARBLE \
-    --scales 8 16 32 64 128 \
-    --seeds 0 1 2 \
+    --scales 8 16 32 64 128 256 512 \
+    --seeds 0 1 2 3 4 \
     --max-tasks 5 \
     --max-concurrent 4 \
     --model gpt-4o-mini \
@@ -93,8 +98,8 @@ source venv/bin/activate
 python scripts/main.py --mode full \
     --benchmark GAIA \
     --data-root /home/kavanav/mas-powerlaws/mas-results/GAIA \
-    --scales 8 16 32 64 128 \
-    --seeds 0 1 2 \
+    --scales 8 16 32 64 128 256 512 \
+    --seeds 0 1 2 3 4 \
     --max-tasks 5 \
     --max-concurrent 4 \
     --model gpt-4o-mini \
@@ -120,8 +125,8 @@ source venv/bin/activate
 python scripts/main.py --mode full \
     --benchmark REALM \
     --data-root /home/kavanav/mas-powerlaws/mas-results/REALM \
-    --scales 8 16 32 64 128 \
-    --seeds 0 1 2 \
+    --scales 8 16 32 64 128 256 512 \
+    --seeds 0 1 2 3 4 \
     --max-tasks 5 \
     --max-concurrent 4 \
     --model gpt-4o-mini \
@@ -147,8 +152,8 @@ source venv/bin/activate
 python scripts/main.py --mode full \
     --benchmark SWE-bench \
     --data-root /home/kavanav/mas-powerlaws/mas-results/SWE-bench \
-    --scales 8 16 32 64 128 \
-    --seeds 0 1 2 \
+    --scales 8 16 32 64 128 256 512 \
+    --seeds 0 1 2 3 4 \
     --max-tasks 5 \
     --max-concurrent 4 \
     --model gpt-4o-mini \
@@ -196,8 +201,8 @@ STEP 3 — IF A JOB FAILS OR TIMES OUT: RESUME
 python scripts/main.py --mode full \
     --benchmark MARBLE \
     --data-root /home/kavanav/mas-powerlaws/mas-results/MARBLE \
-    --scales 8 16 32 64 128 \
-    --seeds 0 1 2 \
+    --scales 8 16 32 64 128 256 512 \
+    --seeds 0 1 2 3 4 \
     --max-tasks 5 \
     --max-concurrent 4 \
     --model gpt-4o-mini \
