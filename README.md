@@ -119,7 +119,6 @@ mas-powerlaws/
 │   ├── run_single_agent_baseline.py, run_swe_eval.py   # Baselines / official SWE-bench scoring
 │   ├── build_manifest.py, diagnose_benchmarks.py        # Setup / debugging utilities
 │   └── test_pipeline.py, test_task_expander.py, smoke_test.py   # Validation (see below)
-├── configs/                    # Experimental condition definitions (topologies, scales, benchmarks)
 ├── slurm/                       # SLURM job scripts for the distributed sweep
 ├── MARBLE/, REALM-Bench/        # Vendored third-party benchmark suites (not part of this paper's code)
 ├── assets/figures/               # Figures used in this README, extracted from the paper
