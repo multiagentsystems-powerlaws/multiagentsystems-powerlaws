@@ -1,6 +1,6 @@
-# Why More Agents Do Not Always Help
+# How Coordination Scales in LLM Agent Societies:
 
-### Empirical Power Laws of Coordination in LLM Agent Societies
+### Heavy Tails, Reinforcement, and Concentration
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](requirements.txt)
